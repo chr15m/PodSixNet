@@ -1,7 +1,7 @@
 import asynchat
 import sys, traceback
 
-from PodSix.UniversalJSONEncoder import *
+from UniversalJSONEncoder import *
 
 class Channel(asynchat.async_chat):
 	def __init__(self, conn=None, addr=(), server=None):

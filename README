@@ -1,4 +1,16 @@
-Why not twisted?
-* steals mainloop
-* bloated not kiss
-* weird template launching language
+limugali - Lightweight Multiplayer Game Library
+-----------------------------------------------
+
+Writing network code sucks. Whenever I think of an awesome idea for a multiplayer game, I proceed to spend the next two weeks trying to write the network abstraction layer. Eventually I get disillusioned and bored of my original idea and move on to something new and the great game idea is lost. This code is a solution to that problem; it's a lightweight network layer that gets out of your way and lets you focus on the game. It delivers network events to you nice and synchronously. You don't have to wait for buffers to fill, or check sockets for waiting data. It's poll based, so you can call it at the bottom of your main loop, and it will call the callback methods in your code with the network events and data that arrive. Easy!
+
+limugali uses the popular JSON format to serialize data and pass between remotely connected Python processes.
+
+Why not use twisted instead?
+---------------------------
+
+Twisted:
+
+* steals the mainloop
+* is bloated not KISS
+* has a weird template launching language when Python does fine
+

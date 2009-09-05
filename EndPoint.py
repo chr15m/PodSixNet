@@ -1,8 +1,6 @@
 import socket
 from asyncore import poll2
 
-from PodSix.SelfCallMixin import SelfCallMixin
-
 from Channel import Channel
 
 class EndPoint(Channel):
