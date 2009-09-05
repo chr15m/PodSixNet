@@ -1,16 +1,17 @@
 PodSixNet - Lightweight Multiplayer Game Library in Python
 ----------------------------------------------------------
 
-Copyright Chris McCormick, 2009.
+Copyright Chris McCormick, 2009. ([Launchpad Project](https://launchpad.net/podsixnet))
 
-	* http://mccormick.cx/
-	* http://podsix.com.au/
+[http://mccormick.cx/](http://mccormick.cx/)
+
+[http://podsix.com.au/](http://podsix.com.au/)
 
 PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's build in asyncore and the simplejson 3rd party library to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
 
-Each class within your game client which wants to receive network events, subclasses the ConnectionListener class and then implements Network_(prefix) methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do connection.Pump() once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using connection.Send(mydata). Likewise on the server side, events are propagated to Network_[prefix] method callbacks and data is sent back to clients with the client.Send(mydata) method.
+Each class within your game client which wants to receive network events, subclasses the ConnectionListener class and then implements Network\_\* methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do **connection.Pump()** once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using **connection.Send(mydata)**. Likewise on the server side, events are propagated to Network\_\* method callbacks and data is sent back to clients with the **client.Send(mydata)** method.
 
-PodSixNet uses the popular JSON format to serialize data to be passed between remotely connected processes. This should make it easy to write clients in languages other than Python. JSON was chosen because there is a parsing library written for just about every language out there: http://json.org/
+PodSixNet uses the popular [JSON](http://json.org/) format to serialize data to be passed between remotely connected processes. This should make it easy to write clients in languages other than Python. [JSON](http://json.org/) was chosen because there is a parsing library written for just about every language out there.
 
 Install
 -------
@@ -19,24 +20,26 @@ First make sure you have [Python](http://python.org/) (2.4 or greater) and [simp
 
 Next you'll want to get the PodSixNet source. You can it in a couple of ways - you can either check the latest cutting-edge code out of the bzr repository:
 
-	bzr co http://mccormick.cx/dev/PodSixNet/
+ * bzr co http://mccormick.cx/dev/PodSixNet/
 
-Otherwise, the same repo periodically gets imported into the SVN repo at Googlecode:
+Or you can download it from Launchpad:
 
-	svn checkout http://podsixnet.googlecode.com/svn/trunk/ PodSixNet
+ * 
 
-There's an __init__.py at the top level, so you can just copy or symlink the PodSixNet directory into your own project and then do 'import PodSixNet'.
+There's an \_\_init\_\_.py at the top level, so you can just copy or symlink the PodSixNet directory into your own project and then do **import PodSixNet**.
 
 Examples
 --------
 
 Chat example:
-	* examples/ChatServer.py
-	* and a couple of instances of examples/ChatClient.py
+
+ * examples/ChatServer.py
+ * and a couple of instances of examples/ChatClient.py
 
 Whiteboard example:
-	* examples/WhiteboardServer.py
-	* and a couple of instances of examples/WhiteboardServer.py
+
+ * examples/WhiteboardServer.py
+ * and a couple of instances of examples/WhiteboardServer.py
 
 Quick start - Server
 --------------------
@@ -118,7 +121,7 @@ Any time you have an object in your game which you want to receive messages from
 		def Network_myaction(data):
 			print "myaction:", data
 
-Just like in the server case, the network events are received by Network_(prefix) callback methods. You can implement as many or as few of the above as you like. For example, NetworkGUI would probably only want to listen for the _connected, _disconnected, and _error network events. The data for _error always comes in the form of network exceptions, like (111, 'Connection refused') - these are passed straight from the socket layer and are standard socket errors.
+Just like in the server case, the network events are received by Network\_\* callback methods. You can implement as many or as few of the above as you like. For example, NetworkGUI would probably only want to listen for the _connected, _disconnected, and _error network events. The data for _error always comes in the form of network exceptions, like (111, 'Connection refused') - these are passed straight from the socket layer and are standard socket errors.
 
 Another class might implement custom methods like Network_myaction(), which will receive any data that gets sent from the server with an 'action' key that has the name 'myaction'. For example, the server might send a message with the number of players currently connected like so:
 

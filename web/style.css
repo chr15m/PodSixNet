@@ -1,0 +1,11 @@
+body {
+	font-family: Arial;
+}
+
+pre {
+	margin-left: 2%;
+	margin-right: 2%;
+	padding: 10px;
+	background: #ffc;
+	border: 1px dashed blue;
+}
