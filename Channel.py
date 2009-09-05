@@ -6,7 +6,7 @@ from rencode import loads, dumps
 class Channel(asynchat.async_chat):
 	endchars = '\0---\0'
 	def __init__(self, conn=None, addr=(), server=None):
-		asynchat.async_chat.__init__(self, conn=conn)
+		asynchat.async_chat.__init__(self, conn)
 		self.addr = addr
 		self._server = server
 		self._ibuffer = ""
