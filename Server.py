@@ -16,6 +16,8 @@ class Server(asyncore.dispatcher):
 		# TODO: generate a random ID and send it through for the client to adopt
 		conn, addr = self.accept()
 		channel = self.channelClass(conn, addr, self)
+		if hasattr(self, "Connected"):
+			self.Connected(conn, addr)
 
 #########################
 #	Test stub	#
