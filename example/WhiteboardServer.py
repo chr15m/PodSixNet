@@ -11,9 +11,15 @@ class ServerChannel(Channel):
 	"""
 	def __init__(self, *args, **kwargs):
 		Channel.__init__(self, *args, **kwargs)
-		self.id = self._server.NextId()
-		self.color = tuple([randint(0, 127) for r in range(3)])
+		self.id = str(self._server.NextId())
+		intid = int(self.id)
+		self.color = [(intid + 1) % 3 * 84, (intid + 2) % 3 * 84, (intid + 3) % 3 * 84] #tuple([randint(0, 127) for r in range(3)])
 		self.lines = []
+	
+	def PassOn(self, data):
+		# pass on what we received to all connected clients
+		data.update({"id": self.id})
+		self._server.SendToAll(data)
 	
 	def Close(self):
 		self._server.DelPlayer(self)
@@ -22,8 +28,13 @@ class ServerChannel(Channel):
 	### Network specific callbacks ###
 	##################################
 	
-	def Network_draw(self, data):
-		print "Client", self, "drew a point at", data['point']
+	def Network_startline(self, data):
+		self.lines.append([data['point']])
+		self.PassOn(data)
+	
+	def Network_drawpoint(self, data):
+		self.lines[-1].append(data['point'])
+		self.PassOn(data)
 
 class WhiteboardServer(Server):
 	channelClass = ServerChannel
@@ -44,8 +55,8 @@ class WhiteboardServer(Server):
 	def AddPlayer(self, player):
 		print "New Player" + str(player.addr)
 		self.players[player] = True
+		player.Send({"action": "initial", "lines": dict([(p.id, {"color": p.color, "lines": p.lines}) for p in self.players])})
 		self.SendPlayers()
-		player.Send({"action": "initial", "lines": dict([(p.id, (p.color, p.lines)) for p in self.players])})
 	
 	def DelPlayer(self, player):
 		print "Deleting Player" + str(player.addr)
@@ -53,7 +64,7 @@ class WhiteboardServer(Server):
 		self.SendPlayers()
 	
 	def SendPlayers(self):
-		self.SendToAll({"action": "players", "players": [p.id for p in self.players]})
+		self.SendToAll({"action": "players", "players": dict([(p.id, p.color) for p in self.players])})
 	
 	def SendToAll(self, data):
 		[p.Send(data) for p in self.players]

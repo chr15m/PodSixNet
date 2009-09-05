@@ -14,31 +14,34 @@ txtpos = (100, 90)
 
 class Whiteboard:
 	def __init__(self):
-		self.status = "connecting"
-		self.players = "0 players"
-		self.lines = []
+		self.statusLabel = "connecting"
+		self.playersLabel = "0 players"
 		self.frame = 0
+		self.down = False
 	
 	def Events(self):
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+			if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == 27):
 				exit()
 			
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				pass
+				self.down = True
+				self.PenDown(event)
 			
-			if event.type == pygame.MOUSEMOTION:
-				pass
+			if event.type == pygame.MOUSEMOTION and self.down:
+				self.PenMove(event)
 			
 			if event.type == pygame.MOUSEBUTTONUP:
-				pass
+				self.down = False
+				self.PenUp(event)
 	
-	def Draw(self):
+	def Draw(self, linesets):
 	        screen.fill([255, 255, 255])
-		txt = fnt.render(self.status, 1, (0, 0, 0))
-		pygame.draw.rect(screen, [0, 0, 255, 100], (100, 100, 150, 100), 0)
-		screen.blit(fnt.render(self.status, 1, (0, 0, 0)), [10, 10])
-		screen.blit(fnt.render(self.players, 1, (0, 0, 0)), [10, 20])
+		txt = fnt.render(self.statusLabel, 1, (0, 0, 0))
+		screen.blit(fnt.render(self.statusLabel, 1, (0, 0, 0)), [10, 10])
+		txt = fnt.render(self.playersLabel, 1, (0, 0, 0))
+		screen.blit(fnt.render(self.playersLabel, 1, (0, 0, 0)), [10, 20])
+		[[pygame.draw.aalines(screen, c, False, l) for l in lines if len(l) > 1] for c, lines in linesets]
 	        pygame.display.flip()
 		self.frame += 1
 
