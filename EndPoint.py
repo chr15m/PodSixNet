@@ -51,14 +51,14 @@ class EndPoint(Channel):
 			# what does this even mean?
 			self.queue.append({"action": "error", "error": (-3, 'Network exception occurred')})
 		else:
-			self.queue.append({"action": "error", "error": (-1, 'Error connecting')})
+			self.queue.append({"action": "error", "error": (-1, "Couldn't connect")})
 	
 	def NetworkExceptionEvent(self):
 		if self.isConnected:
 			# what does this even mean?
 			self.queue.append({"action": "error", "error": (-2, 'Network exception event occurred')})
 		else:
-			self.queue.append({"action": "error", "error": (-1, 'Error connecting')})
+			self.queue.append({"action": "error", "error": (-1, "Couldn't connect")})
 	
 	def ConnectionError(self):
 		self.isConnected = False
