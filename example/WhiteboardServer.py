@@ -1,8 +1,8 @@
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
 
-from limugali.Server import Server
-from limugali.Channel import Channel
+from PodSixNet.Server import Server
+from PodSixNet.Channel import Channel
 
 class ServerChannel(Channel):
 	"""

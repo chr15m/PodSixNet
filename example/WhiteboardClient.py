@@ -1,6 +1,6 @@
 from time import sleep
 
-from limugali.Connection import *
+from PodSixNet.Connection import *
 from Whiteboard import Whiteboard
 
 class Client(ConnectionListener, Whiteboard):

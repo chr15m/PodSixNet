@@ -1,7 +1,7 @@
 from time import sleep
 from sys import stdin, exit
 
-from limugali.Connection import *
+from PodSixNet.Connection import *
 
 # This example uses Python threads to manage async input from sys.stdin.
 # Don't ever do this. (I'm doing it for simplicity's sake)
