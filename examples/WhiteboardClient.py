@@ -13,8 +13,8 @@ class Client(ConnectionListener, Whiteboard):
 		Whiteboard.__init__(self)
 	
 	def Loop(self):
-		connection.Pump()
 		self.Pump()
+		connection.Pump()
 		self.Events()
 		self.Draw([(self.players[p]['color'], self.players[p]['lines']) for p in self.players])
 		
