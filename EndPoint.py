@@ -47,14 +47,22 @@ class EndPoint(Channel):
 		self.queue.append({"action": "error", "error": error})
 	
 	def NetworkException(self):
-		self.queue.append({"action": "error", "error": 'Network exception'})
+		if self.isConnected:
+			# what does this even mean?
+			self.queue.append({"action": "error", "error": (-3, 'Network exception occurred')})
+		else:
+			self.queue.append({"action": "error", "error": (-1, 'Error connecting')})
 	
 	def NetworkExceptionEvent(self):
-		self.queue.append({"action": "error", "error": 'Network exception event'})
+		if self.isConnected:
+			# what does this even mean?
+			self.queue.append({"action": "error", "error": (-2, 'Network exception event occurred')})
+		else:
+			self.queue.append({"action": "error", "error": (-1, 'Error connecting')})
 	
 	def ConnectionError(self):
 		self.isConnected = False
-		self.queue.append({"action": "error", "error": "Connection error"})
+		self.queue.append({"action": "error", "error": (-1, "Connection error")})
 
 if __name__ == "__main__":
 	from time import sleep
