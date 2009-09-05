@@ -9,10 +9,10 @@ from thread import *
 
 class Client(ConnectionListener):
 	def __init__(self):
-		self.lock = allocate_lock()
 		self.Connect(('localhost', 31425))
 		print "Chat client started"
 		print "Ctrl-C to exit"
+		# get a nickname from the user before starting
 		print "Enter your nickname: ",
 		connection.Send({"action": "nickname", "nickname": stdin.readline().rstrip("\n")})
 		# launch our threaded input loop
@@ -24,25 +24,22 @@ class Client(ConnectionListener):
 	
 	def InputLoop(self):
 		# horrid threaded input loop
+		# continually reads from stdin and sends whatever is typed to the server
 		while 1:
-			self.Send({"action": "message", "message": stdin.readline().rstrip("\n")})
+			connection.Send({"action": "message", "message": stdin.readline().rstrip("\n")})
 	
-	def Send(self, data):
-		# put a lock around our connection.Send
-		self.lock.acquire()
-		connection.Send(data)
-		self.lock.release()
-
-	###############################
-	### Network event callbacks ###
-	###############################
+	#######################################
+	### Network event/message callbacks ###
+	#######################################
 	
 	def Network_players(self, data):
-		print "*** players:", ", ".join([p[0] + (p[1] and "(away)" or "") for p in data['players']])
+		print "*** players: " + ", ".join([p for p in data['players']])
 	
 	def Network_message(self, data):
 		print data['who'] + ": " + data['message']
 	
+	# built in stuff
+
 	def Network_connected(self, data):
 		print "You are now connected to the server"
 	

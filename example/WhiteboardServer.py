@@ -10,7 +10,6 @@ class ServerChannel(Channel):
 	"""
 	def __init__(self, *args, **kwargs):
 		self.nickname = "anonymous"
-		self.away = False
 		Channel.__init__(self, *args, **kwargs)
 	
 	def Close(self):
@@ -29,12 +28,8 @@ class ServerChannel(Channel):
 	
 	def Network_draw(self, data):
 		print "Client", self, "drew a point at", data['point']
-	
-	def Network_away(self, data):
-		self.away = data['away']
-		self._server.SendPlayers()
 
-class CCServer(Server):
+class ChatServer(Server):
 	channelClass = ServerChannel
 	
 	def __init__(self, *args, **kwargs):
@@ -57,7 +52,7 @@ class CCServer(Server):
 		self.SendPlayers()
 	
 	def SendPlayers(self):
-		self.SendToAll({"action": "players", "players": [(p.nickname, p.away) for p in self.players]})
+		self.SendToAll({"action": "players", "players": [p.nickname for p in self.players]})
 	
 	def SendToAll(self, data):
 		[p.Send(data) for p in self.players]
@@ -67,6 +62,6 @@ class CCServer(Server):
 			self.Pump()
 			sleep(0.0001)
 
-s = CCServer()
+s = ChatServer()
 s.Launch()
 
