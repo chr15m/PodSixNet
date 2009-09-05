@@ -18,7 +18,7 @@ Install
 
 First make sure you have [Python](http://python.org/) 2.4 or greater and [simplejson](http://pypi.python.org/pypi/simplejson) installed.
 
-Next you'll want to get the PodSixNet source. You can it in a couple of ways - you can either check the latest cutting-edge code out of the bzr repository:
+Next you'll want to get the PodSixNet source. You can get it in a couple of ways - you can either check the latest cutting-edge code out of the bzr repository:
 
  * bzr co http://mccormick.cx/dev/PodSixNet/
 
