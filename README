@@ -7,18 +7,16 @@ Copyright Chris McCormick, 2009. ([Launchpad project page](https://launchpad.net
 
 [http://podsix.com.au/](http://podsix.com.au/)
 
-[Join the PodSixNet mailing list group](http://groups.google.com/group/podsixnet)
+[Join the PodSixNet mailing list](http://groups.google.com/group/podsixnet)
 
-PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and the simplejson 3rd party library to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
+PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and rencode.py (included) to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
 
 Each class within your game client which wants to receive network events, subclasses the ConnectionListener class and then implements `Network_*` methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do `connection.Pump()` once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using `connection.Send(mydata)`. Likewise on the server side, events are propagated to `Network_*` method callbacks and data is sent back to clients with the `client.Send(mydata)` method.
-
-PodSixNet uses the popular [JSON](http://json.org/) format to serialize data to be passed between remotely connected processes. This should make it easy to write clients in languages other than Python. [JSON](http://json.org/) was chosen because there is a parsing library written for just about every language out there.
 
 Install
 -------
 
-First make sure you have [Python](http://python.org/) 2.4 or greater and [simplejson](http://pypi.python.org/pypi/simplejson) installed.
+First make sure you have [Python](http://python.org/) 2.4 or greater installed.
 
 Next you'll want to get the PodSixNet source. You can get it in a couple of ways - you can either check the latest cutting-edge code out of the bzr repository:
 
@@ -27,6 +25,8 @@ Next you'll want to get the PodSixNet source. You can get it in a couple of ways
 Or you can [download a tarball of the latest release (version ### version ###)](PodSixNet-### version ###.tar.gz).
 
 There's an `__init__.py` at the top level, so you can just copy or symlink the PodSixNet directory into your own project and then do `import PodSixNet`.
+
+PodSixNet can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that don't have native Python datastructures, such as Javascript.
 
 Examples
 --------
@@ -161,5 +161,5 @@ Twisted is a fantastic library for writing robust network code. I have used it i
 * has a weird template launching language when Python should do just fine
 * is not written 100% for the specfic use-case of multiplayer games
 
-These are some of the reasons why I decided to write a library that is lightweight, has no dependencies except Python and simplejson, and is dedicated 100% to the task of multiplayer game networking.
+These are some of the reasons why I decided to write a library that is lightweight, has no dependencies except Python, and is dedicated 100% to the task of multiplayer game networking.
 
