@@ -1,3 +1,4 @@
+# coding=utf-8
 import socket
 import sys
 
@@ -88,6 +89,7 @@ if __name__ == "__main__":
 	endpoint.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
 	endpoint.Send({"action": "hello", "data": [454, 35, 43, 543, "aabv"]})
 	endpoint.Send({"action": "hello", "data": [10] * 512})
+	endpoint.Send({"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zäö"})
 	
 	print "polling for half a second"
 	for x in range(50):

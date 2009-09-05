@@ -1,15 +1,16 @@
 import asynchat
 import sys, traceback
 
-from UniversalJSONEncoder import *
+from rencode import loads, dumps
 
 class Channel(asynchat.async_chat):
+	endchars = '\0---\0'
 	def __init__(self, conn=None, addr=(), server=None):
 		asynchat.async_chat.__init__(self, conn=conn)
 		self.addr = addr
 		self._server = server
 		self._ibuffer = ""
-		self.set_terminator("\0")
+		self.set_terminator(self.endchars)
 		self.sendqueue = []
 	
 	def collect_incoming_data(self, data):
@@ -29,7 +30,7 @@ class Channel(asynchat.async_chat):
 		self.sendqueue = []
 	
 	def Send(self, data):
-		self.sendqueue.append(dumps(data, cls=UniversalJSONEncoder) + "\0")
+		self.sendqueue.append(dumps(data) + self.endchars)
 	
 	def handle_connect(self):
 		if hasattr(self, "Connected"):

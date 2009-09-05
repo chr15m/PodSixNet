@@ -69,6 +69,9 @@ class Client(ConnectionListener, Whiteboard):
 		self.statusLabel = "connected"
 	
 	def Network_error(self, data):
+		print data
+		import traceback
+		traceback.print_exc()
 		self.statusLabel = data['error'][1]
 		connection.Close()
 	
