@@ -37,3 +37,4 @@ class Channel(asynchat.async_chat):
 	def handle_error(self):
 		if hasattr(self, "Error"):
 			self.Error()
+

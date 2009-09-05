@@ -16,6 +16,7 @@ class Server(asyncore.dispatcher):
 		# TODO: generate a random ID and send it through for the client to adopt
 		conn, addr = self.accept()
 		channel = self.channelClass(conn, addr, self)
+		channel.Send({"action": "connected"})
 		if hasattr(self, "Connected"):
 			self.Connected(conn, addr)
 
@@ -24,22 +25,29 @@ class Server(asyncore.dispatcher):
 #########################
 
 if __name__ == "__main__":
-	def test(self, data):
-		print "Ran test method for 'hello' action"
-		print "received:", data
-	Channel.Action_hello = test
+	class ServerChannel(Channel):
+		def Action_hello(self, data):
+			print "*Server* ran test method for 'hello' action"
+			print "*Server* received:", data
 	
-	server = Server()
+	class EndPointChannel(Channel):
+		def Action_connected(self, data):
+			print "*EndPoint* ran connected method"
+			print "*EndPoint* received:", data
+			print "*EndPoint* initiating send"
+			outgoing.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
+	
+	server = Server(channelClass=ServerChannel)
 	
 	sender = asyncore.dispatcher()
 	sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 	sender.connect(("localhost", 31425))
+	outgoing = EndPointChannel(sender)
 	
-	outgoing = Channel(sender)
-	outgoing.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
+	from time import sleep
 	
-	try:
-		asyncore.loop()
-	except KeyboardInterrupt:
-		pass
+	print "\tpolling for half a second"
+	for x in range(50):
+		asyncore.poll2()
+		sleep(0.001)
 
