@@ -1,5 +1,10 @@
 import socket
-from asyncore import poll2
+import sys
+
+if float(sys.version[:3]) < 2.5:
+	from asyncore import poll2 as poll
+else:
+	from asyncore import poll
 
 from Channel import Channel
 
@@ -28,7 +33,7 @@ class EndPoint(Channel):
 	def Pump(self):
 		Channel.Pump(self)
 		self.queue = []
-		poll2()
+		poll()
 	
 	# methods to add network data to the queue depending on network events
 	

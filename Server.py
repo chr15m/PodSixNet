@@ -1,5 +1,11 @@
 import socket
 import asyncore
+import sys
+
+if float(sys.version[:3]) < 2.5:
+	from asyncore import poll2 as poll
+else:
+	from asyncore import poll
 
 from Channel import Channel
 
@@ -33,7 +39,7 @@ class Server(asyncore.dispatcher):
 	
 	def Pump(self):
 		[c.Pump() for c in self.channels]
-		asyncore.poll2()
+		poll()
 
 #########################
 #	Test stub	#
