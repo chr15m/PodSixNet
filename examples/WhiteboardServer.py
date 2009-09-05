@@ -1,3 +1,6 @@
+# find the PodSixNet module in the default situation
+import sys, os; sys.path += ["..", ".." + os.path.sep + ".."];
+
 from time import sleep, localtime
 from random import randint
 from weakref import WeakKeyDictionary

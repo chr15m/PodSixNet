@@ -1,10 +1,14 @@
+# find the PodSixNet module in the default situation
+import sys, os; sys.path += ["..", ".." + os.path.sep + ".."];
+
 from time import sleep
 from sys import stdin, exit
 
 from PodSixNet.Connection import *
 
 # This example uses Python threads to manage async input from sys.stdin.
-# Don't ever do this. (I'm doing it for simplicity's sake)
+# This is so that I can receive input from the console whilst running the server.
+# Don't ever do this - it's slow and ugly. (I'm doing it for simplicity's sake)
 from thread import *
 
 class Client(ConnectionListener):
