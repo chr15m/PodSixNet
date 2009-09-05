@@ -1,4 +1,5 @@
 from time import sleep, localtime
+from random import randint
 from weakref import WeakKeyDictionary
 
 from PodSixNet.Server import Server
@@ -9,8 +10,10 @@ class ServerChannel(Channel):
 	This is the server representation of a single connected client.
 	"""
 	def __init__(self, *args, **kwargs):
-		self.nickname = "anonymous"
 		Channel.__init__(self, *args, **kwargs)
+		self.id = self._server.NextId()
+		self.color = tuple([randint(0, 127) for r in range(3)])
+		self.lines = []
 	
 	def Close(self):
 		self._server.DelPlayer(self)
@@ -19,10 +22,6 @@ class ServerChannel(Channel):
 	### Network specific callbacks ###
 	##################################
 	
-	def Network_nickname(self, data):
-		self.nickname = data['nickname']
-		self._server.SendPlayers()
-	
 	def Network_draw(self, data):
 		print "Client", self, "drew a point at", data['point']
 
@@ -30,9 +29,14 @@ class WhiteboardServer(Server):
 	channelClass = ServerChannel
 	
 	def __init__(self, *args, **kwargs):
+		self.id = 0
 		Server.__init__(self, *args, **kwargs)
 		self.players = WeakKeyDictionary()
 		print 'Server launched'
+	
+	def NextId(self):
+		self.id += 1
+		return self.id
 	
 	def Connected(self, channel, addr):
 		self.AddPlayer(channel)
@@ -41,7 +45,7 @@ class WhiteboardServer(Server):
 		print "New Player" + str(player.addr)
 		self.players[player] = True
 		self.SendPlayers()
-		print "players", [p for p in self.players]
+		player.Send({"action": "initial", "lines": dict([(p.id, (p.color, p.lines)) for p in self.players])})
 	
 	def DelPlayer(self, player):
 		print "Deleting Player" + str(player.addr)
@@ -49,7 +53,7 @@ class WhiteboardServer(Server):
 		self.SendPlayers()
 	
 	def SendPlayers(self):
-		self.SendToAll({"action": "players", "players": [p.nickname for p in self.players]})
+		self.SendToAll({"action": "players", "players": [p.id for p in self.players]})
 	
 	def SendToAll(self, data):
 		[p.Send(data) for p in self.players]

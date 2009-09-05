@@ -16,6 +16,8 @@ class Whiteboard:
 	def __init__(self):
 		self.status = "connecting"
 		self.players = "0 players"
+		self.lines = []
+		self.frame = 0
 	
 	def Events(self):
 		for event in pygame.event.get():
@@ -23,7 +25,13 @@ class Whiteboard:
 				exit()
 			
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				self.PenDraw(event)
+				pass
+			
+			if event.type == pygame.MOUSEMOTION:
+				pass
+			
+			if event.type == pygame.MOUSEBUTTONUP:
+				pass
 	
 	def Draw(self):
 	        screen.fill([255, 255, 255])
@@ -32,4 +40,5 @@ class Whiteboard:
 		screen.blit(fnt.render(self.status, 1, (0, 0, 0)), [10, 10])
 		screen.blit(fnt.render(self.players, 1, (0, 0, 0)), [10, 20])
 	        pygame.display.flip()
+		self.frame += 1
 

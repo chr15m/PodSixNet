@@ -6,6 +6,7 @@ from Whiteboard import Whiteboard
 class Client(ConnectionListener, Whiteboard):
 	def __init__(self):
 		self.Connect(('localhost', 31425))
+		Whiteboard.__init__(self)
 	
 	def Loop(self):
 		connection.Pump()
@@ -13,15 +14,13 @@ class Client(ConnectionListener, Whiteboard):
 		self.Events()
 		self.Draw()
 		
-		if not connection.isConnected:
-			self.status = "connecting" + ("." * ((self.frame / 10) % 4))
+		if "connecting" in self.status:
+			self.status = "connecting" + ("." * ((self.frame / 30) % 4))
 	
 	#######################	
 	### Event callbacks ###
 	#######################
 	def PenDraw(self, e):
-		print e.pos
-		# connection.Send({"action": "nickname", "nickname": self.parent.nameInput.text})
 		connection.Send({"action": "draw", "point": e.pos})
 	
 	###############################
