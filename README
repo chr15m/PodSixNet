@@ -1,20 +1,132 @@
-PodSixNet - Lightweight Multiplayer Game Library
-------------------------------------------------
+PodSixNet - Lightweight Multiplayer Game Library in Python
+----------------------------------------------------------
 
 Copyright Chris McCormick, 2009.
 
+http://mccormick.cx/
+http://podsix.com.au/
+
 Writing network code sucks. Whenever I think of an awesome idea for a multiplayer game, I proceed to spend the next two weeks trying to write the network abstraction layer. This is way too long to try and get a prototype going, so eventually I get disillusioned and bored of my original idea and move on to something new and the great game idea is lost. This code is a solution to that problem: it's a lightweight network layer that gets out of your way and lets you focus on the game.
 
-This library delivers network events to your game classes in what I hope is an elegant way, in the form of callback methods on "listener" classes. Each class within your game that wants to receive network events subclasses the ConnectionListener class and then implements Network_* methods to catch specific events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do connection.Poll() once per game loop and the library will handle everything for you, passing off events to all classes that are listening. Sending data back to the server is just as easy using connection.Send(mydata).
+This library delivers network events to your game classes in what I hope is an elegant way, in the form of callback methods on "listener" classes. Each class within your game that wants to receive network events, subclasses the ConnectionListener class and then implements Network_* methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do connection.Poll() once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using connection.Send(mydata).
 
 PodSixNet uses the popular JSON format to serialize data and pass between remotely connected Python processes. This should make it easy to write clients in languages other than Python. JSON was chosen because there is a parsing library written for just about every language out there: http://json.org/
+
+Examples
+--------
+
+Run examples/ChatServer.py and a couple of instances of examples/ChatClient.py
+Run examples/WhiteboardServer.py and a couple of instances of examples/WhiteboardServer.py
+
+Quick start - Server
+--------------------
+
+You will need to subclass two classes in order to make your own server. Each time a client connects, a new Channel based class will be created, so you should subclass Channel to make your own server-representation-of-a-client class like this:
+
+	from PodSixNet.Channel import Channel
+	
+	class ClientChannel(Channel):
+		
+		def Network(data):
+			print data
+		
+		def Network_myaction(data):
+			print "myaction:", data
+
+Whenever the client does connection.Send(mydata), the Network() method will be called. The method Network_myaction will only be called if your data has a key called 'action' with a value of "myaction". In other words if it looks something like this:
+
+	data = {"action": "myaction", "blah": 123, ... }
+
+Next you need to subclass the Server class like this:
+
+	from PodSixNet.Server import Server
+	
+	class MyServer(Server):
+		
+		channelClass = ClientChannel
+		
+		def Connected(self, channel, addr):
+			print 'new connection:', channel
+
+Set channelClass to the channel class that you created above. The method Connected() will be called whenever a new client connects to your server. See the example servers for an idea of what you might do each time a client connects. You need to call Server.Poll() every now and then, probably once per game loop. For example:
+
+	myserver = MyServer()
+	while True:
+		myserver.Pump()
+		sleep(0.0001)
+
+When you want to send data to a specific client/channel, use the Send method of the Channel class:
+
+	channel.Send({"action": "hello", "message": "hello client!"})
+
+Quick start - Client
+--------------------
+
+To have a client connect to your new server, you should use the Connection module. See `pydoc Connection` for more details, but here's a summary:
+
+Connection.connection is a singleton Channel which connects to the server. You'll only have one of these in your game code, and you'll use it to connect to the server and send messages to the server.
+
+	from Connection import connection
+	
+	# connect to the server - optionally pass hostname and port like: ("mccormick.cx", 31425)
+	connection.Connect()
+	
+	connection.Send({"action": "myaction", "blah": 123, "things": [3, 4, 3, 4, 7]})
+
+You'll also need to put the following code once somewhere in your game loop:
+
+	connection.Poll()
+
+Any time you have an object in your game which you want to receive messages from the server, subclass ConnectionListener. For example:
+
+	from Connection import ConnectionListener
+	
+	class MyNetworkListener(ConnectionListener):
+	
+		def Network(self, data):
+			print 'network data:', data
+		
+		def Network_connected(self, data):
+			print "connected to the server"
+		
+		def Network_error(self, data):
+			print "error:", data['error'][1]
+		
+		def Network_disconnected(self, data):
+			print "disconnected from the server"
+		
+		def Network_myaction(data):
+			print "myaction:", data
+
+Just like in the server case, the network events are received by Network_ callback methods. You can implement as many or as few of the above as you like. For example, NetworkGUI would probably only want to listen for the _connected, _disconnected, and _error network events. The data for _error always comes in the form of network exceptions, like (111, 'Connection refused') - these are passed straight from the socket layer and are standard socket errors.
+
+Another class might implement custom methods like Network_myaction, which will receive any data that gets sent from the server with an 'action' key that has the name 'myaction'. For example, the server might send a message with the number of players currently connected like so:
+
+	channel.Send({"action": "numplayers", "players": 10})
+
+And the listener would look like this:
+
+	from Connection import ConnectionListener
+	
+	class MyPlayerListener(ConnectionListener):
+		
+		def Network_numplayers(data):
+			# update gui element displaying the number of currently connected players
+			print data['players']
+
+You can subclass ConnectionListener as many times as you like in your application, and every class you make which subclasses it will receive the network events via named Network callbacks. You should call the Pump() method on each object you instantiate once per game loop:
+
+	gui = MyPlayerListener()
+	while 1:
+		connection.Pump()
+		gui.Pump()
 
 License
 -------
 
 PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called COPYING for details.
 
-This basically means that you can use it in any type of project (commercial or otherwise) but if you make changes to the PodSixNet code, you must make the modified code available. Hopefully you'll tell us about it so we can incorporate your changes.
+This basically means that you can use it in most types of projects (commercial or otherwise), but if you make changes to the PodSixNet code you must make the modified code available with the distribution of your software. Hopefully you'll tell us about it so we can incorporate your changes. I am not a lawyer, so please read the license carefully to understand your rights with respect to this code.
 
 If you would like to obtain a commercial license for this code, please contact me privately at <chris@mccormick.cx>.
 
@@ -23,9 +135,10 @@ Why not use Twisted instead?
 
 Twisted is a fantastic library for writing robust network code. I have used it in several projects in the past, and it was quite nice to work with. That said, Twisted:
 
-* steals the mainloop
-* is bloated not KISS
-* has a weird template launching language when Python does fine
+* wants to steal the mainloop
+* is bloated not KISS (it implements many many different protocols)
+* has a weird template launching language when Python should do just fine
 * is not written 100% for the specfic use-case of multiplayer games
 
-These are the reasons why I decided to write a library that is lightweight, and dedicated 100% to the task of writing network code for multiplayer games.
+These are some of the reasons why I decided to write a library that is lightweight, has no dependencies except Python and simplejson, and is dedicated 100% to the task of multiplayer game networking.
+
