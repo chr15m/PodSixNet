@@ -21,10 +21,6 @@ class EndPoint(Channel):
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.connect(self.address)
 	
-	def Close(self):
-		self.isConnected = False
-		self.close()
-	
 	def GetQueue(self):
 		return self.queue
 	
@@ -33,6 +29,11 @@ class EndPoint(Channel):
 		poll2()
 	
 	# methods to add network data to the queue depending on network events
+	
+	def Close(self):
+		self.isConnected = False
+		self.close()
+		self.queue.append({"action": "disconnected"})
 	
 	def Connected(self):
 		self.queue.append({"action": "socketConnect"})
