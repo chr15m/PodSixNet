@@ -10,9 +10,9 @@ echo "Generating and uploading HTML to mccormick.cx:"
 cp COPYING web/
 html=`markdown README`
 infile=`cat web/base.html`
-echo ${infile//\#\#\# content \#\#\#/$html} > web/index.html
+echo "${infile//\#\#\# content \#\#\#/$html}" > web/index.html
 infile=`cat web/index.html`
-echo ${infile//\#\#\# version \#\#\#/$BZRREV} > web/index.html
+echo "${infile//\#\#\# version \#\#\#/$BZRREV}" > web/index.html
 scp web/* $REMOTE
 
 echo "Exporting tarball and uploading to mccormick.cx"

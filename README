@@ -26,7 +26,7 @@ Or you can [download a tarball of the latest release (version ### version ###)](
 
 There's an `__init__.py` at the top level, so you can just copy or symlink the PodSixNet directory into your own project and then do `import PodSixNet`.
 
-PodSixNet can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that don't have native Python datastructures, such as Javascript.
+By default PodSixNet uses a binary encoder to transfer data over the network, but it can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that can't read the 'rencode' binary format, such as Javascript.
 
 Examples
 --------
