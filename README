@@ -16,7 +16,7 @@ PodSixNet uses the popular [JSON](http://json.org/) format to serialize data to 
 Install
 -------
 
-First make sure you have [Python](http://python.org/) (2.4 or greater) and [simplejson](http://pypi.python.org/pypi/simplejson) installed.
+First make sure you have [Python](http://python.org/) 2.4 or greater and [simplejson](http://pypi.python.org/pypi/simplejson) installed.
 
 Next you'll want to get the PodSixNet source. You can it in a couple of ways - you can either check the latest cutting-edge code out of the bzr repository:
 
@@ -24,7 +24,7 @@ Next you'll want to get the PodSixNet source. You can it in a couple of ways - y
 
 Or you can [download a tarball of the latest release (version ### version ###)](PodSixNet-### version ###.tar.gz).
 
-There's an \_\_init\_\_.py at the top level, so you can just copy or symlink the PodSixNet directory into your own project and then do `import PodSixNet`.
+There's an `__init__.py` at the top level, so you can just copy or symlink the PodSixNet directory into your own project and then do `import PodSixNet`.
 
 Examples
 --------
@@ -145,7 +145,7 @@ You can subclass `ConnectionListener` as many times as you like in your applicat
 License
 -------
 
-PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called COPYING for details.
+PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called [COPYING](COPYING) for details.
 
 This basically means that you can use it in most types of projects (commercial or otherwise), but if you make changes to the PodSixNet code you must make the modified code available with the distribution of your software. Hopefully you'll tell us about it so we can incorporate your changes. I am not a lawyer, so please read the license carefully to understand your rights with respect to this code.
 
