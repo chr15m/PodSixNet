@@ -36,7 +36,7 @@ class Server(asyncore.dispatcher):
 
 if __name__ == "__main__":
 	class ServerChannel(Channel):
-		def Action_hello(self, data):
+		def Network_hello(self, data):
 			print "*Server* ran test method for 'hello' action"
 			print "*Server* received:", data
 	
@@ -44,8 +44,8 @@ if __name__ == "__main__":
 		def Connected(self):
 			print "*EndPoint* Connected()"
 		
-		def Action_connected(self, data):
-			print "*EndPoint* Action_connected(", data, ")"
+		def Network_connected(self, data):
+			print "*EndPoint* Network_connected(", data, ")"
 			print "*EndPoint* initiating send"
 			outgoing.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
 	

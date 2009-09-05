@@ -1,7 +1,7 @@
 import asynchat
 import sys, traceback
 
-from UniversalJSONEncoder import *
+from PodSix.UniversalJSONEncoder import *
 
 class Channel(asynchat.async_chat):
 	def __init__(self, conn=None, addr=(), server=None):
@@ -19,7 +19,10 @@ class Channel(asynchat.async_chat):
 		self._ibuffer = ""
 		
 		if type(dict()) == type(data) and data.has_key('action'):
-			method = getattr(self, 'Action_' + data['action'], None)
+			method = getattr(self, 'Network_' + data['action'], None)
+			if method:
+				method(data)
+			method = getattr(self, 'Network', None)
 			if method:
 				method(data)
 		else:

@@ -9,18 +9,18 @@ class EndPoint(Channel):
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.connect(addr)
 	
-	def Action_connected(self, data):
+	def Network_connected(self, data):
 		print 'got connected message', data
 
 if __name__ == "__main__":
 	from time import sleep
 	class ServerChannel(Channel):
-		def Action_hello(self, data):
+		def Network_hello(self, data):
 			print "*Server* ran test method for 'hello' action"
 			print "*Server* received:", data
 	
 	class MyEndPoint(EndPoint):
-		def Action_connected(self, data):
+		def Network_connected(self, data):
 			print "*EndPoint* received connected"
 			print "*EndPoint* data:", data
 	
