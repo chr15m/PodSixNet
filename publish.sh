@@ -19,3 +19,6 @@ echo "Exporting tarball and uploading to mccormick.cx"
 bzr export PodSixNet-$BZRREV.tar.gz .
 scp PodSixNet-$BZRREV.tar.gz $REMOTE
 ssh $SRV "cd $DIR && rm PodSixNet.tar.gz && ln -s PodSixNet-$BZRREV.tar.gz PodSixNet.tar.gz"
+
+echo "Pushing changes to google code"
+bzr svn-push https://mccormix@podsixnet.googlecode.com/svn/podsixnet/
