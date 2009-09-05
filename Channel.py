@@ -10,6 +10,7 @@ class Channel(asynchat.async_chat):
 		self._server = server
 		self._ibuffer = ""
 		self.set_terminator("\0")
+		self.sendqueue = []
 	
 	def collect_incoming_data(self, data):
 		self._ibuffer += data
@@ -23,8 +24,12 @@ class Channel(asynchat.async_chat):
 		else:
 			print "OOB data:", data
 	
+	def Pump(self):
+		[asynchat.async_chat.push(self, d) for d in self.sendqueue]
+		self.sendqueue = []
+	
 	def Send(self, data):
-		asynchat.async_chat.push(self, dumps(data, cls=UniversalJSONEncoder) + "\0")
+		self.sendqueue.append(dumps(data, cls=UniversalJSONEncoder) + "\0")
 	
 	def handle_connect(self):
 		if hasattr(self, "Connected"):

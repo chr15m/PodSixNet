@@ -9,6 +9,7 @@ class Server(asyncore.dispatcher):
 	def __init__(self, channelClass=None, localaddr=("127.0.0.1", 31425), listeners=5):
 		if channelClass:
 			self.channelClass = channelClass
+		self.channels = []
 		asyncore.dispatcher.__init__(self)
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.set_reuse_addr()
@@ -25,12 +26,13 @@ class Server(asyncore.dispatcher):
 			print 'warning: server accept() threw EWOULDBLOCK'
 			return
 		
-		channel = self.channelClass(conn, addr, self)
-		channel.Send({"action": "connected"})
+		self.channels.append(self.channelClass(conn, addr, self))
+		self.channels[-1].Send({"action": "connected"})
 		if hasattr(self, "Connected"):
-			self.Connected(channel, addr)
+			self.Connected(self.channels[-1], addr)
 	
 	def Pump(self):
+		[c.Pump() for c in self.channels]
 		asyncore.poll2()
 
 #########################
@@ -68,5 +70,6 @@ if __name__ == "__main__":
 	print "*** polling for half a second"
 	for x in range(50):
 		server.Pump()
+		outgoing.Pump()
 		sleep(0.001)
 

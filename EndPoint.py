@@ -26,6 +26,7 @@ class EndPoint(Channel):
 		return self.queue
 	
 	def Pump(self):
+		Channel.Pump(self)
 		self.queue = []
 		poll2()
 	
@@ -85,6 +86,7 @@ if __name__ == "__main__":
 	
 	print "polling for half a second"
 	for x in range(50):
+		server.Pump()
 		endpoint.Pump()
 		if endpoint.GetQueue():
 			print "*Endpoint*:", endpoint.GetQueue()
