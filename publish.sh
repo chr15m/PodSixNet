@@ -13,7 +13,6 @@ rpl -q '### version ###' "$BZRREV" web/index.html 2>/dev/null
 scp web/* $REMOTE
 
 echo "Generating tarball and uploading to mccormick.cx:"
-rm $TARFILE
 tar -c --exclude=.bzr --exclude=$TARFILE --exclude=web -zvf $TARFILE ../PodSixNet
 scp PodSixNet-$BZRREV.tar.gz $REMOTE
 
