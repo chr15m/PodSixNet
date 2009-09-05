@@ -16,12 +16,19 @@ class Server(asyncore.dispatcher):
 		self.listen(listeners)
 	
 	def handle_accept(self):
-		# TODO: generate a random ID and send it through for the client to adopt
-		conn, addr = self.accept()
+		try:
+			conn, addr = self.accept()
+		except socket.error:
+			print 'warning: server accept() threw an exception'
+			return
+		except TypeError:
+			print 'warning: server accept() threw EWOULDBLOCK'
+			return
+		
 		channel = self.channelClass(conn, addr, self)
 		channel.Send({"action": "connected"})
 		if hasattr(self, "Connected"):
-			self.Connected(conn, addr)
+			self.Connected(channel, addr)
 
 #########################
 #	Test stub	#
@@ -34,13 +41,19 @@ if __name__ == "__main__":
 			print "*Server* received:", data
 	
 	class EndPointChannel(Channel):
+		def Connected(self):
+			print "*EndPoint* Connected()"
+		
 		def Action_connected(self, data):
-			print "*EndPoint* ran connected method"
-			print "*EndPoint* received:", data
+			print "*EndPoint* Action_connected(", data, ")"
 			print "*EndPoint* initiating send"
 			outgoing.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
 	
+	def Connected(channel, addr):
+		print "*Server* Connected() ", channel, "connected on", addr
+	
 	server = Server(channelClass=ServerChannel)
+	server.Connected = Connected
 	
 	sender = asyncore.dispatcher()
 	sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,7 +62,7 @@ if __name__ == "__main__":
 	
 	from time import sleep
 	
-	print "\tpolling for half a second"
+	print "*** polling for half a second"
 	for x in range(50):
 		asyncore.poll2()
 		sleep(0.001)

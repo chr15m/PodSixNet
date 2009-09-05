@@ -1,4 +1,5 @@
 import asynchat
+import sys, traceback
 
 from UniversalJSONEncoder import *
 
@@ -17,24 +18,43 @@ class Channel(asynchat.async_chat):
 		data = loads(self._ibuffer)
 		self._ibuffer = ""
 		
-		if data.has_key('action'):
+		if type(dict()) == type(data) and data.has_key('action'):
 			method = getattr(self, 'Action_' + data['action'], None)
 			if method:
 				method(data)
+		else:
+			print "OOB data:", data
 	
 	def Send(self, data):
 		asynchat.async_chat.push(self, dumps(data, cls=UniversalJSONEncoder) + "\0")
 	
 	def handle_connect(self):
-		if self.connected and hasattr(self, "Connected"):
+		if hasattr(self, "Connected"):
 			self.Connected()
-	
-	def handle_expt(self):
-		self.close()
-		if hasattr(self, "ConnectionError"):
-			self.ConnectionError()
+		else:
+			print "Unhandled Connected()"
 	
 	def handle_error(self):
+		self.close()
 		if hasattr(self, "Error"):
-			self.Error()
+			self.Error(sys.exc_info()[1])
+		else:
+			asynchat.async_chat.handle_error(self)
+	
+	def handle_expt(self):
+		if hasattr(self, "NetworkException"):
+			self.NetworkException()
+		else:
+			print "Unhandled NetworkException()"
+	
+	def handle_expt_event(self):
+		if hasattr(self, "NetworkExceptionEvent"):
+			self.NetworkExceptionEvent()
+		else:
+			print "Unhandled NetworkExceptionEvent()"
+	
+	def handle_close(self):
+		if hasattr(self, "Close"):
+			self.Close()
+		asynchat.async_chat.handle_close(self)
 

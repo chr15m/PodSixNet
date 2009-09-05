@@ -9,17 +9,8 @@ class EndPoint(Channel):
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.connect(addr)
 	
-	def Action_connected(self):
-		print 'got connected message'
-	
-	def Connected(self):
-		print 'connected'
-	
-	def Error(self):
-		print "error sending"
-	
-	def ConnectionError(self):
-		print "Couldn't connect!"
+	def Action_connected(self, data):
+		print 'got connected message', data
 
 if __name__ == "__main__":
 	from time import sleep
