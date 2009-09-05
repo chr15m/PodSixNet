@@ -19,13 +19,16 @@ class ServerChannel(Channel):
 	##################################
 	### Network specific callbacks ###
 	##################################
-
+	
 	def Network_message(self, data):
 		self._server.SendToAll({"action": "message", "message": self.nickname + ": " + data['message']})
 	
 	def Network_nickname(self, data):
 		self.nickname = data['nickname']
 		self._server.SendPlayers()
+	
+	def Network_draw(self, data):
+		print "Client", self, "drew a point at", data['point']
 	
 	def Network_away(self, data):
 		self.away = data['away']

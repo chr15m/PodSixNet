@@ -1,43 +1,45 @@
 from time import sleep
 
 from limugali.Connection import *
+from PygameHelper import PygameHelper
 
-# connection.Send({"action": "nickname", "nickname": self.parent.nameInput.text})
-
-class Client(ConnectionListener):
+class Client(ConnectionListener, PygameHelper):
 	def __init__(self):
 		self.Connect(('localhost', 31425))
 	
 	def Loop(self):
+		connection.Pump()
 		self.Pump()
+		self.Events()
 		#self.Draw()
+		
+		#if not connection.isConnected and not self.errorLabel in self.objects:
+		#	gfx.DrawText("Connecting" + ("." * ((self.frame / 10) % 4)), {"left": 0.5, "bottom": 0.7}, [200, 200, 200])
 	
-	def Draw(self):
-		gfx.SetBackgroundColor([150, 150, 150])
-		if not connection.isConnected and not self.errorLabel in self.objects:
-			gfx.DrawText("Connecting" + ("." * ((self.frame / 10) % 4)), {"left": 0.5, "bottom": 0.7}, [200, 200, 200])
-		if self.game.players:
-			self.playersLabel.text = str(len(self.game.players)) + " player" + (len(self.game.players) > 1 and "s" or "") + " online"
-		else:
-			self.playersLabel.text = ""
+	#######################	
+	### Event callbacks ###
+	#######################
+	def PenDraw(self, e):
+		print e.pos
+		# connection.Send({"action": "nickname", "nickname": self.parent.nameInput.text})
+		connection.Send({"action": "draw", "point": e.pos})
 	
-	##################################
-	### Network specific callbacks ###
-	##################################
+	###############################
+	### Network event callbacks ###
+	###############################
+	
+	def Network(self, data):
+		print 'network:', data
 	
 	def Network_connected(self, data):
-		[self.Add(x) for x in self.uis if not x in self.objects]
+		print 'connected:', data
 	
 	def Network_error(self, data):
-		print data
-		self.errorLabel.text = data['error'][1]
-		[self.Add(x) for x in self.erroruis if not x in self.objects]
+		print 'error:', data
 		connection.Close()
 	
 	def Network_disconnected(self, data):
-		[self.Remove(x) for x in self.uis if x in self.objects]
-		self.errorLabel.text += "\nDisconnected"
-		[self.Add(x) for x in self.erroruis if not x in self.objects]
+		print 'disconnected'
 
 c = Client()
 while 1:
