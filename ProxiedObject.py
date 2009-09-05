@@ -26,7 +26,12 @@ class ProxiedObject(object):
 		self._proxyId = id(self)
 	
 	def _AddChannel(self, channel):
-		self._proxyChannels.append(channel)
+		if not channel in self._proxyChannels:
+			self._proxyChannels.append(channel)
+	
+	def _RemoveChannel(self, channel):
+		if channel in self._proxyChannels:
+			self._proxyChannels.remove(channel)
 	
 	def __setattr__(self, key, val):
 		if key in self._proxyVars:
@@ -61,18 +66,27 @@ if __name__ == "__main__":
 		
 		def AddObject(self, obj):
 			print "adding object", obj
-			print "sending", {"action": "new", "class": obj.__class__.__name__, "data": obj.__dict__}
+			self.Send({"action": "new", "class": obj.__class__.__name__, "data": obj.__dict__})
 			obj._AddChannel(self)
 		
+		def RemoveObject(self, obj):
+			print "removing object", obj
+			self.Send({"action": "del", "id": obj._proxyId})
+			obj._RemoveChannel(self)
+
 		def UpdateObject(self, obj, data):
-			print "sending", {"action": "update", "id": obj._proxyId, "data": data}
+			self.Send({"action": "update", "id": obj._proxyId, "data": data})
 		
 		def SendCall(self, obj, method, args, kwargs):
-			print "sending", {"action": "call", "id": obj._proxyId, "method": method, "args": args, "kwargs": kwargs}
+			self.Send({"action": "call", "id": obj._proxyId, "method": method, "args": args, "kwargs": kwargs})
 	
 	d = DudeFace()
+	d.MyCall("pants")
+	d.x = 22
+	
 	srv = MyChannel()
 	srv.AddObject(d)
+	
 	d.x = 45
 	d.y = "mr pants"
 	d.MyCall("yo")
@@ -82,4 +96,9 @@ if __name__ == "__main__":
 	
 	d.z[1] = 4
 	d.x["einz"] = 455
+
+	srv.RemoveObject(d)
+	
+	d.x = 15
+	d.MyCall("fnnnn")
 

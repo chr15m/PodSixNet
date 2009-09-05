@@ -13,6 +13,7 @@ class Server(asyncore.dispatcher):
 		self.listen(listeners)
 	
 	def handle_accept(self):
+		# TODO: generate a random ID and send it through for the client to adopt
 		conn, addr = self.accept()
 		channel = self.channelClass(conn, addr, self)
 
