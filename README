@@ -1,16 +1,31 @@
 PodSixNet - Lightweight Multiplayer Game Library
 ------------------------------------------------
 
-Writing network code sucks. Whenever I think of an awesome idea for a multiplayer game, I proceed to spend the next two weeks trying to write the network abstraction layer. This is way too long to try and get a prototype going, so eventually I get disillusioned and bored of my original idea and move on to something new and the great game idea is lost. This code is a solution to that problem: it's a lightweight network layer that gets out of your way and lets you focus on the game. It delivers network events to your game classes in what I think is a very elegant fashion in the form of callback methods on "listener" classes. Each class within your game that wants to receive network events subclasses the ConnectionListener class and then implements Network_* methods to catch specific events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do connection.Poll() once per game loop and the library will handle everything for you, passing off events to all classes that are listening. Sending data back to the server is just as easy using connection.Send(mydata).
+Copyright Chris McCormick, 2009.
 
-PodSixNet uses the popular JSON format to serialize data and pass between remotely connected Python processes. This should make it easy to write clients in languages other than Python. JSON was chosen because there is a parsing library written for just about every language out there in the world: http://json.org/
+Writing network code sucks. Whenever I think of an awesome idea for a multiplayer game, I proceed to spend the next two weeks trying to write the network abstraction layer. This is way too long to try and get a prototype going, so eventually I get disillusioned and bored of my original idea and move on to something new and the great game idea is lost. This code is a solution to that problem: it's a lightweight network layer that gets out of your way and lets you focus on the game.
 
-Why not use twisted instead?
+This library delivers network events to your game classes in what I hope is an elegant way, in the form of callback methods on "listener" classes. Each class within your game that wants to receive network events subclasses the ConnectionListener class and then implements Network_* methods to catch specific events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do connection.Poll() once per game loop and the library will handle everything for you, passing off events to all classes that are listening. Sending data back to the server is just as easy using connection.Send(mydata).
+
+PodSixNet uses the popular JSON format to serialize data and pass between remotely connected Python processes. This should make it easy to write clients in languages other than Python. JSON was chosen because there is a parsing library written for just about every language out there: http://json.org/
+
+License
+-------
+
+PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called COPYING for details.
+
+This basically means that you can use it in any type of project (commercial or otherwise) but if you make changes to the PodSixNet code, you must make the modified code available. Hopefully you'll tell us about it so we can incorporate your changes.
+
+If you would like to obtain a commercial license for this code, please contact me privately at <chris@mccormick.cx>.
+
+Why not use Twisted instead?
 ---------------------------
 
-Twisted:
+Twisted is a fantastic library for writing robust network code. I have used it in several projects in the past, and it was quite nice to work with. That said, Twisted:
 
 * steals the mainloop
 * is bloated not KISS
 * has a weird template launching language when Python does fine
+* is not written 100% for the specfic use-case of multiplayer games
 
+These are the reasons why I decided to write a library that is lightweight, and dedicated 100% to the task of writing network code for multiplayer games.
