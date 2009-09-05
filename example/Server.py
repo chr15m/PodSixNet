@@ -1,8 +1,8 @@
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
 
-from mugali.Server import Server
-from mugali.Channel import Channel
+from limugali.Server import Server
+from limugali.Channel import Channel
 
 class ServerChannel(Channel):
 	"""
@@ -36,7 +36,6 @@ class CCServer(Server):
 	
 	def __init__(self, *args, **kwargs):
 		Server.__init__(self, *args, **kwargs)
-		Concurrent.__init__(self)
 		self.players = WeakKeyDictionary()
 		print 'Server launched'
 	

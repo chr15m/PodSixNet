@@ -1,17 +1,17 @@
-from time import time
+from time import sleep
 
-from limugali.Connection import connection
+from limugali.Connection import *
 
 # connection.Send({"action": "nickname", "nickname": self.parent.nameInput.text})
 
 class Client(ConnectionListener):
-	def __init__(self, game):
+	def __init__(self):
 		self.Connect(('localhost', 31425))
 	
 	def Loop(self):
-		ConnectionListener.Pump(self)
-		self.Draw()
-		
+		self.Pump()
+		#self.Draw()
+	
 	def Draw(self):
 		gfx.SetBackgroundColor([150, 150, 150])
 		if not connection.isConnected and not self.errorLabel in self.objects:
@@ -39,3 +39,7 @@ class Client(ConnectionListener):
 		self.errorLabel.text += "\nDisconnected"
 		[self.Add(x) for x in self.erroruis if not x in self.objects]
 
+c = Client()
+while 1:
+	c.Loop()
+	sleep(0.001)
