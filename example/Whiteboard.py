@@ -11,9 +11,12 @@ screen = pygame.display.set_mode(SCREENSIZE)
 pygame.font.init()
 fnt = pygame.font.SysFont("Arial", 14)
 txtpos = (100, 90)
-txt = fnt.render("hello", 1, (0, 0, 0))
 
-class PygameHelper:
+class Whiteboard:
+	def __init__(self):
+		self.status = "connecting"
+		self.players = "0 players"
+	
 	def Events(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
@@ -21,12 +24,12 @@ class PygameHelper:
 			
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				self.PenDraw(event)
-				txtpos = event.pos
-				txt = fnt.render('click', 1, (0, 0, 0))
 	
 	def Draw(self):
 	        screen.fill([255, 255, 255])
+		txt = fnt.render(self.status, 1, (0, 0, 0))
 		pygame.draw.rect(screen, [0, 0, 255, 100], (100, 100, 150, 100), 0)
-		screen.blit(txt, txtpos)
+		screen.blit(fnt.render(self.status, 1, (0, 0, 0)), [10, 10])
+		screen.blit(fnt.render(self.players, 1, (0, 0, 0)), [10, 20])
 	        pygame.display.flip()
 

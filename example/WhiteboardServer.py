@@ -19,9 +19,6 @@ class ServerChannel(Channel):
 	### Network specific callbacks ###
 	##################################
 	
-	def Network_message(self, data):
-		self._server.SendToAll({"action": "message", "message": self.nickname + ": " + data['message']})
-	
 	def Network_nickname(self, data):
 		self.nickname = data['nickname']
 		self._server.SendPlayers()
@@ -29,7 +26,7 @@ class ServerChannel(Channel):
 	def Network_draw(self, data):
 		print "Client", self, "drew a point at", data['point']
 
-class ChatServer(Server):
+class WhiteboardServer(Server):
 	channelClass = ServerChannel
 	
 	def __init__(self, *args, **kwargs):
@@ -62,6 +59,6 @@ class ChatServer(Server):
 			self.Pump()
 			sleep(0.0001)
 
-s = ChatServer()
+s = WhiteboardServer()
 s.Launch()
 

@@ -1,9 +1,9 @@
 from time import sleep
 
 from limugali.Connection import *
-from PygameHelper import PygameHelper
+from Whiteboard import Whiteboard
 
-class Client(ConnectionListener, PygameHelper):
+class Client(ConnectionListener, Whiteboard):
 	def __init__(self):
 		self.Connect(('localhost', 31425))
 	
@@ -11,10 +11,10 @@ class Client(ConnectionListener, PygameHelper):
 		connection.Pump()
 		self.Pump()
 		self.Events()
-		#self.Draw()
+		self.Draw()
 		
-		#if not connection.isConnected and not self.errorLabel in self.objects:
-		#	gfx.DrawText("Connecting" + ("." * ((self.frame / 10) % 4)), {"left": 0.5, "bottom": 0.7}, [200, 200, 200])
+		if not connection.isConnected:
+			self.status = "connecting" + ("." * ((self.frame / 10) % 4))
 	
 	#######################	
 	### Event callbacks ###

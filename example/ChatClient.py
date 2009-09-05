@@ -44,7 +44,7 @@ class Client(ConnectionListener):
 		print "You are now connected to the server"
 	
 	def Network_error(self, data):
-		print 'error:', data
+		print 'error:', data['error'][1]
 		connection.Close()
 	
 	def Network_disconnected(self, data):
