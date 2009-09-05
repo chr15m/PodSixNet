@@ -6,6 +6,7 @@ TARFILE=PodSixNet-$BZRREV.tar.gz
 
 echo "Generating and uploading HTML to mccormick.cx:"
 html=`markdown README`
+cp COPYING web/
 cp web/base.html web/index.html
 rpl -q '### content ###' "$html" web/index.html 2>/dev/null
 rpl -q '### version ###' "$BZRREV" web/index.html 2>/dev/null
