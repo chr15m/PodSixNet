@@ -1,5 +1,5 @@
-import asyncore
 import socket
+import asyncore
 
 from Channel import Channel
 
@@ -29,6 +29,9 @@ class Server(asyncore.dispatcher):
 		channel.Send({"action": "connected"})
 		if hasattr(self, "Connected"):
 			self.Connected(channel, addr)
+	
+	def Pump(self):
+		asyncore.poll2()
 
 #########################
 #	Test stub	#
@@ -64,6 +67,6 @@ if __name__ == "__main__":
 	
 	print "*** polling for half a second"
 	for x in range(50):
-		asyncore.poll2()
+		server.Pump()
 		sleep(0.001)
 
