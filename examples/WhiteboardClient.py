@@ -8,14 +8,11 @@ class Client(ConnectionListener, Whiteboard):
 		self.Connect(('localhost', 31425))
 		self.players = {}
 		Whiteboard.__init__(self)
-		self.sendqueue = []
 	
 	def Loop(self):
 		connection.Pump()
 		self.Pump()
 		self.Events()
-		[connection.Send(x) for x in self.sendqueue]
-		self.sendqueue = []
 		self.Draw([(self.players[p]['color'], self.players[p]['lines']) for p in self.players])
 		
 		if "connecting" in self.statusLabel:
@@ -28,13 +25,13 @@ class Client(ConnectionListener, Whiteboard):
 	#	connection.Send({"action": "draw", "point": e.pos})
 	
 	def PenDown(self, e):
-		self.sendqueue.append({"action": "startline", "point": e.pos})
+		connection.Send({"action": "startline", "point": e.pos})
 	
 	def PenMove(self, e):
-		self.sendqueue.append({"action": "drawpoint", "point": e.pos})
+		connection.Send({"action": "drawpoint", "point": e.pos})
 	
 	def PenUp(self, e):
-		self.sendqueue.append({"action": "drawpoint", "point": e.pos})
+		connection.Send({"action": "drawpoint", "point": e.pos})
 	
 	###############################
 	### Network event callbacks ###

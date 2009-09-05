@@ -7,7 +7,7 @@ Copyright Chris McCormick, 2009. ([Launchpad project page](https://launchpad.net
 
 [http://podsix.com.au/](http://podsix.com.au/)
 
-PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore and the simplejson 3rd party library to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
+PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and the simplejson 3rd party library to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
 
 Each class within your game client which wants to receive network events, subclasses the ConnectionListener class and then implements `Network_*` methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do `connection.Pump()` once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using `connection.Send(mydata)`. Likewise on the server side, events are propagated to `Network_*` method callbacks and data is sent back to clients with the `client.Send(mydata)` method.
 
