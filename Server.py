@@ -4,8 +4,11 @@ import socket
 from Channel import Channel
 
 class Server(asyncore.dispatcher):
-	def __init__(self, channelClass=Channel, localaddr=("127.0.0.1", 31425), listeners=5):
-		self.channelClass = channelClass
+	channelClass = Channel
+	
+	def __init__(self, channelClass=None, localaddr=("127.0.0.1", 31425), listeners=5):
+		if channelClass:
+			self.channelClass = channelClass
 		asyncore.dispatcher.__init__(self)
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.set_reuse_addr()
