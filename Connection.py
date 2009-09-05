@@ -8,6 +8,11 @@ class ConnectionListener(SelfCallMixin):
 	"""
 	Subclass this guy to have your own classes monitor incoming network messages.
 	"""
+	def Connect(self, *args, **kwargs):
+		connection.DoConnect(*args, **kwargs)
+		# check for connection errors:
+		self.Pump()
+	
 	def Pump(self):
 		for data in connection.GetQueue():
 			self.CallMethod("Network_" + data['action'], data)
@@ -27,7 +32,7 @@ if __name__ == "__main__":
 	
 	c = ConnectionTest()
 	
-	connection.DoConnect()
+	c.Connect()
 	while 1:
 		connection.Pump()
 		c.Pump()

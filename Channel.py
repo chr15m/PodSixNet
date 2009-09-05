@@ -38,23 +38,17 @@ class Channel(asynchat.async_chat):
 			print "Unhandled Connected()"
 	
 	def handle_error(self):
-		self.close()
+		try:
+			self.close()
+		except:
+			pass
 		if hasattr(self, "Error"):
 			self.Error(sys.exc_info()[1])
 		else:
 			asynchat.async_chat.handle_error(self)
 	
 	def handle_expt(self):
-		if hasattr(self, "NetworkException"):
-			self.NetworkException()
-		else:
-			print "Unhandled NetworkException()"
-	
-	def handle_expt_event(self):
-		if hasattr(self, "NetworkExceptionEvent"):
-			self.NetworkExceptionEvent()
-		else:
-			print "Unhandled NetworkExceptionEvent()"
+		pass
 	
 	def handle_close(self):
 		if hasattr(self, "Close"):

@@ -17,9 +17,12 @@ class EndPoint(Channel):
 	def DoConnect(self, address=None):
 		if address:
 			self.address = address
-		Channel.__init__(self)
-		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.connect(self.address)
+		try:
+			Channel.__init__(self)
+			self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+			self.connect(self.address)
+		except socket.gaierror, e:
+			self.queue.append({"action": "error", "error": e.args})
 	
 	def GetQueue(self):
 		return self.queue
@@ -46,20 +49,6 @@ class EndPoint(Channel):
 	
 	def Error(self, error):
 		self.queue.append({"action": "error", "error": error})
-	
-	def NetworkException(self):
-		if self.isConnected:
-			# what does this even mean?
-			self.queue.append({"action": "error", "error": (-3, 'Network exception occurred')})
-		else:
-			self.queue.append({"action": "error", "error": (-1, "Couldn't connect")})
-	
-	def NetworkExceptionEvent(self):
-		if self.isConnected:
-			# what does this even mean?
-			self.queue.append({"action": "error", "error": (-2, 'Network exception event occurred')})
-		else:
-			self.queue.append({"action": "error", "error": (-1, "Couldn't connect")})
 	
 	def ConnectionError(self):
 		self.isConnected = False
