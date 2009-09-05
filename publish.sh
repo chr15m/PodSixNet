@@ -14,7 +14,9 @@ rpl -q '### content ###' "$html" web/index.html 2>/dev/null
 rpl -q '### version ###' "$BZRREV" web/index.html 2>/dev/null
 scp web/* $REMOTE
 
-echo "Generating tarball and uploading to mccormick.cx:"
-tar -c --exclude=*.tar.gz --exclude=*.pyc --exclude=.bzr --exclude=$TARFILE --exclude=web -zvf $TARFILE ../PodSixNet
+#echo "Generating tarball and uploading to mccormick.cx:"
+#tar -c --exclude=*.tar.gz --exclude=*.pyc --exclude=.bzr --exclude=$TARFILE --exclude=web -zvf $TARFILE ../PodSixNet
+echo "Exporting tarball and uploading to mccormick.cx"
+bzr export PodSixNet-$BZRREV.tar.gz .
 scp PodSixNet-$BZRREV.tar.gz $REMOTE
 ssh $SRV "cd $DIR && rm PodSixNet.tar.gz && ln -s PodSixNet-$BZRREV.tar.gz PodSixNet.tar.gz"
