@@ -4,7 +4,7 @@ import sys, os; sys.path += ["..", ".." + os.path.sep + ".."];
 from time import sleep
 from sys import stdin, exit
 
-from PodSixNet.Connection import *
+from PodSixNet.Connection import connection, ConnectionListener
 
 # This example uses Python threads to manage async input from sys.stdin.
 # This is so that I can receive input from the console whilst running the server.
@@ -12,8 +12,8 @@ from PodSixNet.Connection import *
 from thread import *
 
 class Client(ConnectionListener):
-	def __init__(self):
-		self.Connect(('localhost', 31425))
+	def __init__(self, host, port):
+		self.Connect((host, port))
 		print "Chat client started"
 		print "Ctrl-C to exit"
 		# get a nickname from the user before starting
@@ -55,7 +55,12 @@ class Client(ConnectionListener):
 		print 'Server disconnected'
 		exit()
 
-c = Client()
-while 1:
-	c.Loop()
-	sleep(0.001)
+if len(sys.argv) != 2:
+	print "Usage:", sys.argv[0], "host:port"
+	print "e.g.", sys.argv[0], "localhost:31425"
+else:
+	host, port = sys.argv[1].split(":")
+	c = Client(host, int(port))
+	while 1:
+		c.Loop()
+		sleep(0.001)

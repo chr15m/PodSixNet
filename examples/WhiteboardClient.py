@@ -3,12 +3,12 @@ import sys, os; sys.path += ["..", ".." + os.path.sep + ".."];
 
 from time import sleep
 
-from PodSixNet.Connection import *
+from PodSixNet.Connection import connection, ConnectionListener
 from Whiteboard import Whiteboard
 
 class Client(ConnectionListener, Whiteboard):
-	def __init__(self):
-		self.Connect(('localhost', 31425))
+	def __init__(self, host, port):
+		self.Connect((host, port))
 		self.players = {}
 		Whiteboard.__init__(self)
 	
@@ -81,7 +81,13 @@ class Client(ConnectionListener, Whiteboard):
 	def Network_disconnected(self, data):
 		self.statusLabel += " - disconnected"
 
-c = Client()
-while 1:
-	c.Loop()
-	sleep(0.001)
+if len(sys.argv) != 2:
+	print "Usage:", sys.argv[0], "host:port"
+	print "e.g.", sys.argv[0], "localhost:31425"
+else:
+	host, port = sys.argv[1].split(":")
+	c = Client(host, int(port))
+	while 1:
+		c.Loop()
+		sleep(0.001)
+
