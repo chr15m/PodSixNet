@@ -30,7 +30,10 @@ class Channel(asynchat.async_chat):
 		self.sendqueue = []
 	
 	def Send(self, data):
-		self.sendqueue.append(dumps(data) + self.endchars)
+		"""Returns the number of bytes sent after enoding."""
+		outgoing = dumps(data) + self.endchars
+		self.sendqueue.append(outgoing)
+		return len(outgoing)
 	
 	def handle_connect(self):
 		if hasattr(self, "Connected"):
