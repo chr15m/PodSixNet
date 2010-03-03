@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BZRREV=`bzr log -r -1.. --line | cut -d":" -f 1`
+BZRREV=`bzr revno`
 SRV=mccormick.cx
 DIR='~/mccormick.cx/projects/PodSixNet/'
 REMOTE=$SRV:$DIR
