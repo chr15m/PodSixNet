@@ -1,7 +1,5 @@
 * multithreaded server example
 
-* example code to show lag time between server and client
-
 * implement UDP option
 	* connection UDP
 	* connectionless UDP
