@@ -10,8 +10,6 @@
 
 * pyglet example
 
-* State in documentation that *_Network means you can replace '*' with the incoming message identifier.
-
 * Allow the client to connect to more than one server.
 
 * High CPU usage reported? (about 3.5% CPU when doing nothing, true for both server and client; on Mac Leopard, not affected by changing sleep times to 0.01)

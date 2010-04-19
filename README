@@ -7,7 +7,7 @@ Copyright Chris McCormick, 2009-2010. ([Google code page](http://code.google.com
 
 [http://podsix.com.au/](http://podsix.com.au/)
 
-[Join the PodSixNet mailing list](http://groups.google.com/group/podsixnet)
+[PodSixNet mailing list](http://groups.google.com/group/podsixnet) (great for getting help)
 
 PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and rencode.py (included) to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
 
@@ -32,7 +32,7 @@ Of if you prefer SVN check it out of the Google code project:
 
 Or you can [download a tarball of the latest release (version ### version ###)](PodSixNet-### version ###.tar.gz).
 
-The module is found inside a subdirectory called PodSixNet within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the PodSixNet sub-directory into your own project and then do `import PodSixNet`, or else you can run `sudo setup.py install` to install PodSixNet into your Python path.
+The module is found inside a subdirectory called PodSixNet within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the PodSixNet sub-directory into your own project and then do `import PodSixNet`, or else you can run `sudo setup.py install` to install PodSixNet into your Python path. Use `sudo setup.py develop` if you want to stay up to date with the cutting edge and still be able to svn/bzr up every now and then.
 
 By default PodSixNet uses a binary encoder to transfer data over the network, but it can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that can't read the 'rencode' binary format, such as Javascript.
 
@@ -41,13 +41,18 @@ Examples
 
 Chat example:
 
- * examples/ChatServer.py
- * and a couple of instances of examples/ChatClient.py
+ * `python examples/ChatServer.py`
+ * and a couple of instances of `python examples/ChatClient.py`
 
 Whiteboard example:
 
- * examples/WhiteboardServer.py
- * and a couple of instances of examples/WhiteboardServer.py
+ * `python examples/WhiteboardServer.py`
+ * and a couple of instances of `python examples/WhiteboardServer.py`
+
+LagTime example (measures round-trip time from the server to the client):
+
+ * `python examples/LagTimeServer.py`
+ * and a couple of instances of `python examples/LatTimeClient.py`
 
 Quick start - Server
 --------------------
@@ -129,7 +134,7 @@ Any time you have an object in your game which you want to receive messages from
 		def Network_myaction(data):
 			print "myaction:", data
 
-Just like in the server case, the network events are received by `Network_*` callback methods. You can implement as many or as few of the above as you like. For example, NetworkGUI would probably only want to listen for the `_connected`, `_disconnected`, and `_error` network events. The data for `_error` always comes in the form of network exceptions, like (111, 'Connection refused') - these are passed straight from the socket layer and are standard socket errors.
+Just like in the server case, the network events are received by `Network_*` callback methods, where you should replace '*' with the value in the 'action' key you want to catch. You can implement as many or as few of the above as you like. For example, NetworkGUI would probably only want to listen for the `_connected`, `_disconnected`, and `_error` network events. The data for `_error` always comes in the form of network exceptions, like (111, 'Connection refused') - these are passed straight from the socket layer and are standard socket errors.
 
 Another class might implement custom methods like `Network_myaction()`, which will receive any data that gets sent from the server with an 'action' key that has the name 'myaction'. For example, the server might send a message with the number of players currently connected like so:
 
