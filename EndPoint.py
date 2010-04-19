@@ -2,11 +2,7 @@
 import socket
 import sys
 
-if float(sys.version[:3]) < 2.5:
-	from asyncore import poll2 as poll
-else:
-	from asyncore import poll
-
+from async import poll
 from Channel import Channel
 
 class EndPoint(Channel):
@@ -17,12 +13,13 @@ class EndPoint(Channel):
 		self.address = address
 		self.isConnected = False
 		self.queue = []
+		self._map = {}
 	
 	def DoConnect(self, address=None):
 		if address:
 			self.address = address
 		try:
-			Channel.__init__(self)
+			Channel.__init__(self, map=self._map)
 			self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.connect(self.address)
 		except socket.gaierror, e:
@@ -34,7 +31,7 @@ class EndPoint(Channel):
 	def Pump(self):
 		Channel.Pump(self)
 		self.queue = []
-		poll()
+		poll(map=self._map)
 	
 	# methods to add network data to the queue depending on network events
 	
@@ -71,7 +68,7 @@ if __name__ == "__main__":
 	print "-----------------------"
 	endpoint_bad = EndPoint(("mccormick.cx", 23342))
 	endpoint_bad.DoConnect()
-	for i in range(50):
+	for i in range(500):
 		endpoint_bad.Pump()
 		if endpoint_bad.GetQueue():
 			print endpoint_bad.GetQueue()

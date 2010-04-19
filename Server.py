@@ -1,12 +1,7 @@
 import socket
-import asyncore
 import sys
 
-if float(sys.version[:3]) < 2.5:
-	from asyncore import poll2 as poll
-else:
-	from asyncore import poll
-
+from async import poll, asyncore
 from Channel import Channel
 
 class Server(asyncore.dispatcher):
@@ -15,6 +10,7 @@ class Server(asyncore.dispatcher):
 	def __init__(self, channelClass=None, localaddr=("127.0.0.1", 31425), listeners=5):
 		if channelClass:
 			self.channelClass = channelClass
+		self._map = {}
 		self.channels = []
 		asyncore.dispatcher.__init__(self)
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,14 +28,14 @@ class Server(asyncore.dispatcher):
 			print 'warning: server accept() threw EWOULDBLOCK'
 			return
 		
-		self.channels.append(self.channelClass(conn, addr, self))
+		self.channels.append(self.channelClass(conn, addr, self, self._map))
 		self.channels[-1].Send({"action": "connected"})
 		if hasattr(self, "Connected"):
 			self.Connected(self.channels[-1], addr)
 	
 	def Pump(self):
 		[c.Pump() for c in self.channels]
-		poll()
+		poll(map=self._map)
 
 #########################
 #	Test stub	#

@@ -1,12 +1,12 @@
-import asynchat
 import sys, traceback
 
+from async import asynchat
 from rencode import loads, dumps
 
 class Channel(asynchat.async_chat):
 	endchars = '\0---\0'
-	def __init__(self, conn=None, addr=(), server=None):
-		asynchat.async_chat.__init__(self, conn)
+	def __init__(self, conn=None, addr=(), server=None, map=None):
+		asynchat.async_chat.__init__(self, conn, map)
 		self.addr = addr
 		self._server = server
 		self._ibuffer = ""

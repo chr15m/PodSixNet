@@ -1,12 +1,18 @@
+* multithreaded server example
+
 * investigate TCP_NODELAY http://gpwiki.org/index.php/Optimizing_Your_Online_Game_Bandwidth#Nagle_Algorithm
 
 * example code to show lag time between server and client
 
 * implement UDP option
+	* connection UDP
+	* connectionless UDP
 
-* automatic load testing script
+* turn tests into proper doctests
 
-* pglet example
+* load/speed testing script
+
+* pyglet example
 
 * State in documentation that *_Network means you can replace '*' with the incoming message identifier.
 
