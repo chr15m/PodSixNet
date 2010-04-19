@@ -1,28 +1,15 @@
+* investigate TCP_NODELAY http://gpwiki.org/index.php/Optimizing_Your_Online_Game_Bandwidth#Nagle_Algorithm
+
+* example code to show lag time between server and client
+
+* implement UDP option
+
 * automatic load testing script
 
-IMHO, the example code would be clearer and/or easier to test if:
+* pglet example
 
-- it never used "import *" (this makes it hard to figure out what is
-actually being used, from where);
+* State in documentation that *_Network means you can replace '*' with the incoming message identifier.
 
-- there were another couple of examples (as it is, I can only try the chat
-example since I don't have pygame installed);
+* Allow the client to connect to more than one server.
 
-- the examples would grab IP address and port from sys.argv (using default
-values for missing arguments) rather than relying on default values buried
-inside the library functions.
-
-The docs would be clearer if the customizable part of the method names was
-made more explicit in the docs. (I forget the exact string used for that
-part since I don't have the docs in front of me right now. I think it
-started with "my".)
-
-The only big missing feature I've noticed is letting a client connect to
-more than one server. (I have use cases for this, though they are not
-"multiplayer games".)
-
-The chat example uses about 3.5% CPU when doing nothing (I think that was
-true for both server and client; on Mac Leopard), not affected by changing
-the sleep times to 0.01. This is ok, but mysterious, and might not always be
-ok. Probably it should be documented (and explained if possible).
-
+* High CPU usage reported? (about 3.5% CPU when doing nothing, true for both server and client; on Mac Leopard, not affected by changing sleep times to 0.01)
