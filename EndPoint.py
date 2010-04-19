@@ -21,6 +21,7 @@ class EndPoint(Channel):
 		try:
 			Channel.__init__(self, map=self._map)
 			self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+			self.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			self.connect(self.address)
 		except socket.gaierror, e:
 			self.queue.append({"action": "error", "error": e.args})

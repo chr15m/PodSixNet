@@ -14,6 +14,7 @@ class Server(asyncore.dispatcher):
 		self.channels = []
 		asyncore.dispatcher.__init__(self)
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 		self.set_reuse_addr()
 		self.bind(localaddr)
 		self.listen(listeners)

@@ -1,7 +1,5 @@
 * multithreaded server example
 
-* investigate TCP_NODELAY http://gpwiki.org/index.php/Optimizing_Your_Online_Game_Bandwidth#Nagle_Algorithm
-
 * example code to show lag time between server and client
 
 * implement UDP option
