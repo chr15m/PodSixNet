@@ -9,11 +9,14 @@ class EndPoint(Channel):
 	"""
 	The endpoint queues up all network events for other classes to read.
 	"""
-	def __init__(self, address=("127.0.0.1", 31425)):
+	def __init__(self, address=("127.0.0.1", 31425), map=None):
 		self.address = address
 		self.isConnected = False
 		self.queue = []
-		self._map = {}
+		if map is None:
+			self._map = {}
+		else:
+			self._map = map
 	
 	def DoConnect(self, address=None):
 		if address:
@@ -24,6 +27,8 @@ class EndPoint(Channel):
 			self.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			self.connect(self.address)
 		except socket.gaierror, e:
+			self.queue.append({"action": "error", "error": e.args})
+		except socket.error, e:
 			self.queue.append({"action": "error", "error": e.args})
 	
 	def GetQueue(self):
@@ -58,44 +63,99 @@ class EndPoint(Channel):
 		self.queue.append({"action": "error", "error": (-1, "Connection error")})
 
 if __name__ == "__main__":
-	from time import sleep
-	class ServerChannel(Channel):
-		def Network_hello(self, data):
-			print "*Server* ran test method for 'hello' action"
-			print "*Server* received:", data
-			self.Send({"action": "gotit", "data": "Yeah, we got it: " + str(len(data['data'])) + " elements"})
+	import unittest
+	from time import sleep, time
 	
-	print "Trying failing endpoint"
-	print "-----------------------"
-	endpoint_bad = EndPoint(("mccormick.cx", 23342))
-	endpoint_bad.DoConnect()
-	for i in range(500):
-		endpoint_bad.Pump()
-		if endpoint_bad.GetQueue():
-			print endpoint_bad.GetQueue()
-		sleep(0.001)
+	class FailEndPointTestCase(unittest.TestCase):
+		def setUp(self):
+			print
+			print "Trying failed endpoint"
+			print "----------------------"
+			class FailEndPoint(EndPoint):
+				def __init__(self):
+					EndPoint.__init__(self, ("localhost", 31429))
+					self.result = ""
+				
+				def Error(self, error):
+					print "Received error message:", error
+					self.result = error
+				
+				def Test(self):
+					self.DoConnect()
+					start = time()
+					while not self.result and time() - start < 10:
+						self.Pump()
+						sleep(0.001)
+			
+			self.endpoint_bad = FailEndPoint()
+		
+		def runTest(self):
+			self.endpoint_bad.Test()
+			want = (61, 'Connection refused')
+			self.assertEqual(list(self.endpoint_bad.result), list(want), "Socket got %s instead of %s" % (str(self.endpoint_bad.result), str(want)))
+			print
+		
+		def tearDown(self):
+			del self.endpoint_bad
+			print "FailEndPointTestCase complete"
 	
 	from Server import Server
-	server = Server(channelClass=ServerChannel)
+	class EndPointTestCase(unittest.TestCase):
+		def setUp(self):
+			self.outgoing = [
+				{"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}},
+				{"action": "hello", "data": [454, 35, 43, 543, "aabv"]},
+				{"action": "hello", "data": [10] * 512},
+				{"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zäö"},
+			]
+			self.lengths = [len(data['data']) for data in self.outgoing]
+			
+			print
+			print "Trying successful endpoint"
+			print "--------------------------"
+			class ServerChannel(Channel):
+				def Network_hello(self, data):
+					print "*Server* received:", data
+					self._server.received.append(data)
+					self.Send({"action": "gotit", "data": "Yeah, we got it: " + str(len(data['data'])) + " elements"})
+			
+			class TestEndPoint(EndPoint):
+				received = []
+				def Network_gotit(self, data):
+					self.received.append(data)
+					print "gotit:", data
+			
+			self.server = Server(channelClass=ServerChannel)
+			self.server.received = []
+			self.endpoint = TestEndPoint(("localhost", 31425))
+		
+		def runTest(self):
+			self.endpoint.DoConnect()
+			for o in self.outgoing:
+				self.endpoint.Send(o)
+			
+			print "polling for half a second"
+			for x in range(50):
+				self.server.Pump()
+				self.endpoint.Pump()
+				# see if what we receive from the server is what we expect
+				for r in self.server.received:
+					self.failUnless(r == self.outgoing.pop(0))
+				self.server.received = []
+				# see if what we receive from the client is what we expect
+				for r in self.endpoint.received:
+					self.failUnless(r['data'] == "Yeah, we got it: %d elements" % self.lengths.pop(0))
+				self.endpoint.received = []
+				sleep(0.001)
+			
+			self.endpoint.Close()
+			print self.endpoint.GetQueue()
+			print
+		
+		def tearDown(self):
+			del self.server
+			del self.endpoint
+			print "EndPointTestCase complete"
 	
-	print
-	print "Trying successful endpoint"
-	print "--------------------------"
+	unittest.main()
 	
-	endpoint = EndPoint(("localhost", 31425))
-	endpoint.DoConnect()
-	endpoint.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
-	endpoint.Send({"action": "hello", "data": [454, 35, 43, 543, "aabv"]})
-	endpoint.Send({"action": "hello", "data": [10] * 512})
-	endpoint.Send({"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zäö"})
-	
-	print "polling for half a second"
-	for x in range(50):
-		server.Pump()
-		endpoint.Pump()
-		if endpoint.GetQueue():
-			print "*Endpoint*:", endpoint.GetQueue()
-		sleep(0.001)
-	
-	endpoint.Close()
-	print endpoint.GetQueue()
