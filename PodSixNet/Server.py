@@ -12,7 +12,7 @@ class Server(asyncore.dispatcher):
 			self.channelClass = channelClass
 		self._map = {}
 		self.channels = []
-		asyncore.dispatcher.__init__(self)
+		asyncore.dispatcher.__init__(self, map=self._map)
 		self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 		self.set_reuse_addr()
@@ -63,15 +63,15 @@ if __name__ == "__main__":
 	server = Server(channelClass=ServerChannel)
 	server.Connected = Connected
 	
-	sender = asyncore.dispatcher()
+	sender = asyncore.dispatcher(map=server._map)
 	sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 	sender.connect(("localhost", 31425))
-	outgoing = EndPointChannel(sender)
+	outgoing = EndPointChannel(sender, map=server._map)
 	
 	from time import sleep
 	
 	print "*** polling for half a second"
-	for x in range(50):
+	for x in range(250):
 		server.Pump()
 		outgoing.Pump()
 		sleep(0.001)
