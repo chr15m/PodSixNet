@@ -43,36 +43,61 @@ class Server(asyncore.dispatcher):
 #########################
 
 if __name__ == "__main__":
-	class ServerChannel(Channel):
-		def Network_hello(self, data):
-			print "*Server* ran test method for 'hello' action"
-			print "*Server* received:", data
+	import unittest
 	
-	class EndPointChannel(Channel):
-		def Connected(self):
-			print "*EndPoint* Connected()"
+	class ServerTestCase(unittest.TestCase):
+		testdata = {"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}}
+		def setUp(self):
+			print "ServerTestCase"
+			print "--------------"
+			
+			class ServerChannel(Channel):
+				def Network_hello(self, data):
+					print "*Server* ran test method for 'hello' action"
+					print "*Server* received:", data
+					self._server.received = data
+			
+			class EndPointChannel(Channel):
+				connected = False
+				def Connected(self):
+					print "*EndPoint* Connected()"
+				
+				def Network_connected(self, data):
+					self.connected = True
+					print "*EndPoint* Network_connected(", data, ")"
+					print "*EndPoint* initiating send"
+					self.Send(ServerTestCase.testdata)
+			
+			class TestServer(Server):
+				connected = False
+				received = None
+				def Connected(self, channel, addr):
+					self.connected = True
+					print "*Server* Connected() ", channel, "connected on", addr
+			
+			self.server = TestServer(channelClass=ServerChannel)
+			
+			sender = asyncore.dispatcher(map=self.server._map)
+			sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+			sender.connect(("localhost", 31425))
+			self.outgoing = EndPointChannel(sender, map=self.server._map)
+			
+		def runTest(self):
+			from time import sleep
+			print "*** polling for half a second"
+			for x in range(250):
+				self.server.Pump()
+				self.outgoing.Pump()
+				if self.server.received:
+					self.failUnless(self.server.received == self.testdata)
+					self.server.received = None
+				sleep(0.001)
+			self.failUnless(self.server.connected == True, "Server is not connected")
+			self.failUnless(self.outgoing.connected == True, "Outgoing socket is not connected")
 		
-		def Network_connected(self, data):
-			print "*EndPoint* Network_connected(", data, ")"
-			print "*EndPoint* initiating send"
-			outgoing.Send({"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}})
+		def tearDown(self):
+			pass
+			del self.server
+			del self.outgoing
 	
-	def Connected(channel, addr):
-		print "*Server* Connected() ", channel, "connected on", addr
-	
-	server = Server(channelClass=ServerChannel)
-	server.Connected = Connected
-	
-	sender = asyncore.dispatcher(map=server._map)
-	sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-	sender.connect(("localhost", 31425))
-	outgoing = EndPointChannel(sender, map=server._map)
-	
-	from time import sleep
-	
-	print "*** polling for half a second"
-	for x in range(250):
-		server.Pump()
-		outgoing.Pump()
-		sleep(0.001)
-
+	unittest.main()
