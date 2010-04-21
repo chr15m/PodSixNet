@@ -108,6 +108,7 @@ if __name__ == "__main__":
 				{"action": "hello", "data": [10] * 512},
 				{"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zäö"},
 			]
+			self.count = len(self.outgoing)
 			self.lengths = [len(data['data']) for data in self.outgoing]
 			
 			print
@@ -117,16 +118,31 @@ if __name__ == "__main__":
 				def Network_hello(self, data):
 					print "*Server* received:", data
 					self._server.received.append(data)
+					self._server.count += 1
 					self.Send({"action": "gotit", "data": "Yeah, we got it: " + str(len(data['data'])) + " elements"})
 			
 			class TestEndPoint(EndPoint):
 				received = []
+				connected = False
+				count = 0
+				
+				def Network_connected(self, data):
+					self.connected = True
+				
 				def Network_gotit(self, data):
 					self.received.append(data)
+					self.count += 1
 					print "gotit:", data
 			
-			self.server = Server(channelClass=ServerChannel)
-			self.server.received = []
+			class TestServer(Server):
+				connected = False
+				received = []
+				count = 0
+				
+				def Connected(self, channel, addr):
+					self.connected = True
+			
+			self.server = TestServer(channelClass=ServerChannel)
 			self.endpoint = TestEndPoint(("localhost", 31425))
 		
 		def runTest(self):
@@ -138,15 +154,24 @@ if __name__ == "__main__":
 			for x in range(50):
 				self.server.Pump()
 				self.endpoint.Pump()
+				
 				# see if what we receive from the server is what we expect
 				for r in self.server.received:
 					self.failUnless(r == self.outgoing.pop(0))
 				self.server.received = []
+				
 				# see if what we receive from the client is what we expect
 				for r in self.endpoint.received:
 					self.failUnless(r['data'] == "Yeah, we got it: %d elements" % self.lengths.pop(0))
 				self.endpoint.received = []
+				
 				sleep(0.001)
+			
+			self.assertTrue(self.server.connected, "Server is not connected")
+			self.assertTrue(self.endpoint.connected, "Endpoint is not connected")
+			
+			self.failUnless(self.server.count == self.count, "Didn't receive the right number of messages")
+			self.failUnless(self.endpoint.count == self.count, "Didn't receive the right number of messages")
 			
 			self.endpoint.Close()
 			print self.endpoint.GetQueue()
