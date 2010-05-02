@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BZRREV=`bzr revno`
 SRV=mccormick.cx
