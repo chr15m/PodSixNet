@@ -23,7 +23,7 @@ class Channel(asynchat.async_chat):
 		if type(dict()) == type(data) and data.has_key('action'):
 			[getattr(self, n)(data) for n in ('Network_' + data['action'], 'Network') if hasattr(self, n)]
 		else:
-			print "OOB data:", data
+			print "OOB data (no such Network_action):", data
 	
 	def Pump(self):
 		[asynchat.async_chat.push(self, d) for d in self.sendqueue]
