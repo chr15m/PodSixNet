@@ -15,6 +15,8 @@ Each class within your game client which wants to receive network events, subcla
 
 If you find a bug, please report it on the mailing list or the [Google code issues page](http://code.google.com/p/podsixnet/issues/list).
 
+For users of the Construct game making environment for Windows, there is a tutorial on doing multiplayer networking with PodSixNet, [here](http://www.scirra.com/forum/viewtopic.php?f=8&t=6299). Thanks to Dave Chabo for contributing this tutorial.
+
 Install
 -------
 
