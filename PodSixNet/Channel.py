@@ -21,7 +21,7 @@ class Channel(asynchat.async_chat):
 		self._ibuffer = ""
 		
 		if type(dict()) == type(data) and data.has_key('action'):
-			[getattr(self, n)(data) for n in ('Network_' + data['action'], 'Network') if hasattr(self, n)]
+			[getattr(self, n)(data) for n in ('Network', 'Network_' + data['action']) if hasattr(self, n)]
 		else:
 			print "OOB data (no such Network_action):", data
 	
