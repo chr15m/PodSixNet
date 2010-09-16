@@ -94,6 +94,7 @@ import struct
 from threading import Lock
 
 from types import (StringType,
+                   UnicodeType,
                    IntType,
                    LongType,
                    DictType,
@@ -482,6 +483,7 @@ encode_func[IntType] = encode_int
 encode_func[LongType] = encode_int
 encode_func[FloatType] = encode_float
 encode_func[StringType] = encode_string
+encode_func[UnicodeType] = encode_string
 encode_func[ListType] = encode_list
 encode_func[TupleType] = encode_tuple
 encode_func[DictType] = encode_dict
