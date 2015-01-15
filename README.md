@@ -1,15 +1,15 @@
-PodSixNet - Lightweight Multiplayer Game Library in Python
-----------------------------------------------------------
-
-[PodSixNet mailing list](http://groups.google.com/group/podsixnet) (great for getting help)
+PodSixNet - lightweight multiplayer networking library for Python games
+-----------------------------------------------------------------------
 
 PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and rencode.py (included) to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
 
 Each class within your game client which wants to receive network events, subclasses the ConnectionListener class and then implements `Network_*` methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do `connection.Pump()` once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using `connection.Send(mydata)`. Likewise on the server side, events are propagated to `Network_*` method callbacks and data is sent back to clients with the `client.Send(mydata)` method.
 
-If you find a bug, please report it on the mailing list or the [Google code issues page](http://code.google.com/p/podsixnet/issues/list).
+The [PodSixNet mailing list](http://groups.google.com/group/podsixnet) is good for getting help from other users.
 
 For users of the Construct game making environment for Windows, there is a tutorial on doing multiplayer networking with PodSixNet, [here](http://www.scirra.com/forum/viewtopic.php?f=8&t=6299). Thanks to Dave Chabo for contributing this tutorial.
+
+Here is [another tutorial by Julian Meyer](http://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python).
 
 Install
 -------
