@@ -146,7 +146,7 @@ You can subclass `ConnectionListener` as many times as you like in your applicat
 License
 -------
 
-Copyright [Chris McCormick](http://mccormick.cx/), 2009-2014.
+Copyright [Chris McCormick](http://mccormick.cx/), 2009-2015.
 
 PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called [COPYING](COPYING) for details.
 
