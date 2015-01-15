@@ -1,12 +1,6 @@
 PodSixNet - Lightweight Multiplayer Game Library in Python
 ----------------------------------------------------------
 
-Copyright [Chris McCormick](mailto:chris@mccormick.cx), 2009-2010. ([Google code page](http://code.google.com/p/podsixnet/)) ([Launchpad project page](https://launchpad.net/podsixnet))
-
-[http://mccormick.cx/](http://mccormick.cx/)
-
-[http://podsix.com.au/](http://podsix.com.au/)
-
 [PodSixNet mailing list](http://groups.google.com/group/podsixnet) (great for getting help)
 
 PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and rencode.py (included) to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
@@ -23,16 +17,6 @@ Install
 First make sure you have [Python](http://python.org/) 2.4 or greater installed.
 
 Next you'll want to get the PodSixNet source.
-
-You can either check the latest cutting-edge code out of the bzr repository:
-
- * bzr co http://mccormick.cx/dev/PodSixNet/
-
-Of if you prefer SVN check it out of the Google code project:
-
- * svn co http://podsixnet.googlecode.com/svn/podsixnet/ PodSixNet
-
-Or you can [download a tarball of the latest release (version ### version ###)](PodSixNet-### version ###.tar.gz).
 
 The module is found inside a subdirectory called PodSixNet within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the PodSixNet sub-directory into your own project and then do `import PodSixNet`, or else you can run `sudo setup.py install` to install PodSixNet into your Python path. Use `sudo setup.py develop` if you want to stay up to date with the cutting edge and still be able to svn/bzr up every now and then.
 
@@ -161,6 +145,8 @@ You can subclass `ConnectionListener` as many times as you like in your applicat
 
 License
 -------
+
+Copyright [Chris McCormick](http://mccormick.cx/), 2009-2014.
 
 PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called [COPYING](COPYING) for details.
 
