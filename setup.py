@@ -7,6 +7,6 @@ setup(
 	author_email='chris@mccormick.cx',
 	url='http://mccormick.cx/projects/PodSixNet/',
 	packages=['PodSixNet'],
-	version=60,
+	version=78,
 )
 
