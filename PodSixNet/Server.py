@@ -1,13 +1,13 @@
 import socket
 import sys
 
-from async import poll, asyncore
-from Channel import Channel
+from PodSixNet.async import poll, asyncore
+from PodSixNet.Channel import Channel
 
 class Server(asyncore.dispatcher):
 	channelClass = Channel
 	
-	def __init__(self, channelClass=None, localaddr=("127.0.0.1", 31425), listeners=5):
+	def __init__(self, channelClass=None, localaddr=("127.0.0.1", 5071), listeners=5):
 		if channelClass:
 			self.channelClass = channelClass
 		self._map = {}
@@ -23,12 +23,12 @@ class Server(asyncore.dispatcher):
 		try:
 			conn, addr = self.accept()
 		except socket.error:
-			print 'warning: server accept() threw an exception'
+			print('warning: server accept() threw an exception')
 			return
 		except TypeError:
-			print 'warning: server accept() threw EWOULDBLOCK'
+			print('warning: server accept() threw EWOULDBLOCK')
 			return
-		
+		print("connection")
 		self.channels.append(self.channelClass(conn, addr, self, self._map))
 		self.channels[-1].Send({"action": "connected"})
 		if hasattr(self, "Connected"):
@@ -48,24 +48,24 @@ if __name__ == "__main__":
 	class ServerTestCase(unittest.TestCase):
 		testdata = {"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}}
 		def setUp(self):
-			print "ServerTestCase"
-			print "--------------"
+			print("ServerTestCase")
+			print("--------------")
 			
 			class ServerChannel(Channel):
 				def Network_hello(self, data):
-					print "*Server* ran test method for 'hello' action"
-					print "*Server* received:", data
+					print("*Server* ran test method for 'hello' action")
+					print("*Server* received:", data)
 					self._server.received = data
 			
 			class EndPointChannel(Channel):
 				connected = False
 				def Connected(self):
-					print "*EndPoint* Connected()"
+					print("*EndPoint* Connected()")
 				
 				def Network_connected(self, data):
 					self.connected = True
-					print "*EndPoint* Network_connected(", data, ")"
-					print "*EndPoint* initiating send"
+					print("*EndPoint* Network_connected(", data, ")")
+					print("*EndPoint* initiating send")
 					self.Send(ServerTestCase.testdata)
 			
 			class TestServer(Server):
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 				received = None
 				def Connected(self, channel, addr):
 					self.connected = True
-					print "*Server* Connected() ", channel, "connected on", addr
+					print("*Server* Connected() ", channel, "connected on", addr)
 			
 			self.server = TestServer(channelClass=ServerChannel)
 			
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 			
 		def runTest(self):
 			from time import sleep
-			print "*** polling for half a second"
+			print("*** polling for half a second")
 			for x in range(250):
 				self.server.Pump()
 				self.outgoing.Pump()

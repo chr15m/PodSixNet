@@ -12,9 +12,9 @@ else:
 # monkey patch older versions to support maps in asynchat. Yuck.
 if float(version[:3]) < 2.6:
 	def asynchat_monkey_init(self, conn=None, map=None):
-		self.ac_in_buffer = ''
-		self.ac_out_buffer = ''
+		self.ac_in_buffer = b''
+		self.ac_out_buffer = b''
 		self.producer_fifo = asynchat.fifo()
 		asyncore.dispatcher.__init__ (self, sock=conn, map=map)
-	asynchat.async_chat.__init__ = asynchat_monkey_init
-
+		
+	#asynchat.async_chat.__init__ = asynchat_monkey_init

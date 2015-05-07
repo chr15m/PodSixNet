@@ -2,8 +2,8 @@
 import socket
 import sys
 
-from async import poll
-from Channel import Channel
+from PodSixNet.async import poll
+from PodSixNet.Channel import Channel
 
 class EndPoint(Channel):
 	"""
@@ -26,9 +26,9 @@ class EndPoint(Channel):
 			self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 			self.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 			self.connect(self.address)
-		except socket.gaierror, e:
+		except socket.gaierror as e:
 			self.queue.append({"action": "error", "error": e.args})
-		except socket.error, e:
+		except socket.error as e:
 			self.queue.append({"action": "error", "error": e.args})
 	
 	def GetQueue(self):
@@ -68,16 +68,14 @@ if __name__ == "__main__":
 	
 	class FailEndPointTestCase(unittest.TestCase):
 		def setUp(self):
-			print
-			print "Trying failed endpoint"
-			print "----------------------"
+			
 			class FailEndPoint(EndPoint):
 				def __init__(self):
 					EndPoint.__init__(self, ("localhost", 31429))
 					self.result = ""
 				
 				def Error(self, error):
-					print "Received error message:", error
+					
 					self.result = error
 				
 				def Test(self):
@@ -93,11 +91,11 @@ if __name__ == "__main__":
 			self.endpoint_bad.Test()
 			want = (61, 'Connection refused')
 			self.assertEqual(list(self.endpoint_bad.result), list(want), "Socket got %s instead of %s" % (str(self.endpoint_bad.result), str(want)))
-			print
+			
 		
 		def tearDown(self):
 			del self.endpoint_bad
-			print "FailEndPointTestCase complete"
+			
 	
 	from Server import Server
 	class EndPointTestCase(unittest.TestCase):
@@ -106,17 +104,15 @@ if __name__ == "__main__":
 				{"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}},
 				{"action": "hello", "data": [454, 35, 43, 543, "aabv"]},
 				{"action": "hello", "data": [10] * 512},
-				{"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zäö"},
+				{"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zÃ¤Ã¶"},
 			]
 			self.count = len(self.outgoing)
 			self.lengths = [len(data['data']) for data in self.outgoing]
 			
-			print
-			print "Trying successful endpoint"
-			print "--------------------------"
+			
 			class ServerChannel(Channel):
 				def Network_hello(self, data):
-					print "*Server* received:", data
+					
 					self._server.received.append(data)
 					self._server.count += 1
 					self.Send({"action": "gotit", "data": "Yeah, we got it: " + str(len(data['data'])) + " elements"})
@@ -132,7 +128,7 @@ if __name__ == "__main__":
 				def Network_gotit(self, data):
 					self.received.append(data)
 					self.count += 1
-					print "gotit:", data
+					
 			
 			class TestServer(Server):
 				connected = False
@@ -150,7 +146,7 @@ if __name__ == "__main__":
 			for o in self.outgoing:
 				self.endpoint.Send(o)
 			
-			print "polling for half a second"
+			
 			for x in range(50):
 				self.server.Pump()
 				self.endpoint.Pump()
@@ -174,13 +170,12 @@ if __name__ == "__main__":
 			self.failUnless(self.endpoint.count == self.count, "Didn't receive the right number of messages")
 			
 			self.endpoint.Close()
-			print self.endpoint.GetQueue()
-			print
+			
 		
 		def tearDown(self):
 			del self.server
 			del self.endpoint
-			print "EndPointTestCase complete"
+			
 	
 	unittest.main()
 	
