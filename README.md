@@ -33,12 +33,12 @@ Chat example:
 Whiteboard example:
 
  * `python examples/WhiteboardServer.py`
- * and a couple of instances of `python examples/WhiteboardServer.py`
+ * and a couple of instances of `python examples/WhiteboardClient.py`
 
 LagTime example (measures round-trip time from the server to the client):
 
  * `python examples/LagTimeServer.py`
- * and a couple of instances of `python examples/LatTimeClient.py`
+ * and a couple of instances of `python examples/LagTimeClient.py`
 
 Quick start - Server
 --------------------
