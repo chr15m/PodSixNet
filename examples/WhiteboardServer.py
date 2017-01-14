@@ -44,7 +44,7 @@ class WhiteboardServer(Server):
 		self.id = 0
 		Server.__init__(self, *args, **kwargs)
 		self.players = WeakKeyDictionary()
-		print 'Server launched'
+		print('Server launched')
 	
 	def NextId(self):
 		self.id += 1
@@ -54,13 +54,13 @@ class WhiteboardServer(Server):
 		self.AddPlayer(channel)
 	
 	def AddPlayer(self, player):
-		print "New Player" + str(player.addr)
+		print("New Player" + str(player.addr))
 		self.players[player] = True
 		player.Send({"action": "initial", "lines": dict([(p.id, {"color": p.color, "lines": p.lines}) for p in self.players])})
 		self.SendPlayers()
 	
 	def DelPlayer(self, player):
-		print "Deleting Player" + str(player.addr)
+		print("Deleting Player" + str(player.addr))
 		del self.players[player]
 		self.SendPlayers()
 	
@@ -77,8 +77,8 @@ class WhiteboardServer(Server):
 
 # get command line argument of server, port
 if len(sys.argv) != 2:
-	print "Usage:", sys.argv[0], "host:port"
-	print "e.g.", sys.argv[0], "localhost:31425"
+	print("Usage:", sys.argv[0], "host:port")
+	print("e.g.", sys.argv[0], "localhost:31425")
 else:
 	host, port = sys.argv[1].split(":")
 	s = WhiteboardServer(localaddr=(host, int(port)))

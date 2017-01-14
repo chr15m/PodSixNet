@@ -16,18 +16,18 @@ class LagTimeChannel(Channel):
 		self.times = []
 	
 	def Close(self):
-		print self, 'Client disconnected'
+		print(self, 'Client disconnected')
 	
 	##################################
 	### Network specific callbacks ###
 	##################################
 	
 	def Network_ping(self, data):
-		print self, "ping %d round trip time was %f" % (data["count"], time() - self.times[data["count"]])
+		print(self, "ping %d round trip time was %f" % (data["count"], time() - self.times[data["count"]]))
 		self.Ping()
 	
 	def Ping(self):
-		print self, "Ping:", self.count
+		print(self, "Ping:", self.count)
 		self.times.append(time())
 		self.Send({"action": "ping", "count": self.count})
 		self.count += 1
@@ -37,10 +37,10 @@ class LagTimeServer(Server):
 	
 	def __init__(self, *args, **kwargs):
 		Server.__init__(self, *args, **kwargs)
-		print 'Server launched'
+		print('Server launched')
 	
 	def Connected(self, channel, addr):
-		print channel, "Channel connected"
+		print(channel, "Channel connected")
 		channel.Ping()
 	
 	def Launch(self):
@@ -50,8 +50,8 @@ class LagTimeServer(Server):
 
 # get command line argument of server, port
 if len(sys.argv) != 2:
-	print "Usage:", sys.argv[0], "host:port"
-	print "e.g.", sys.argv[0], "localhost:31425"
+	print("Usage:", sys.argv[0], "host:port")
+	print("e.g.", sys.argv[0], "localhost:31425")
 else:
 	host, port = sys.argv[1].split(":")
 	s = LagTimeServer(localaddr=(host, int(port)))

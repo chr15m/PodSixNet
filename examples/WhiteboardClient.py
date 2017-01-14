@@ -17,7 +17,7 @@ class Client(ConnectionListener, Whiteboard):
 		self.Draw([(self.players[p]['color'], self.players[p]['lines']) for p in self.players])
 		
 		if "connecting" in self.statusLabel:
-			self.statusLabel = "connecting" + ("." * ((self.frame / 30) % 4))
+			self.statusLabel = "connecting" + "".join(["." for s in range(int(self.frame / 30) % 4)])
 	
 	#######################	
 	### Event callbacks ###
@@ -52,7 +52,7 @@ class Client(ConnectionListener, Whiteboard):
 		mark = []
 		
 		for i in data['players']:
-			if not self.players.has_key(i):
+			if not i in self.players:
 				self.players[i] = {'color': data['players'][i], 'lines': []}
 		
 		for i in self.players:
@@ -63,14 +63,14 @@ class Client(ConnectionListener, Whiteboard):
 			del self.players[m]
 	
 	def Network(self, data):
-		#print 'network:', data
+		#print('network:', data)
 		pass
 	
 	def Network_connected(self, data):
 		self.statusLabel = "connected"
 	
 	def Network_error(self, data):
-		print data
+		print(data)
 		import traceback
 		traceback.print_exc()
 		self.statusLabel = data['error'][1]
@@ -80,8 +80,8 @@ class Client(ConnectionListener, Whiteboard):
 		self.statusLabel += " - disconnected"
 
 if len(sys.argv) != 2:
-	print "Usage:", sys.argv[0], "host:port"
-	print "e.g.", sys.argv[0], "localhost:31425"
+	print("Usage:", sys.argv[0], "host:port")
+	print("e.g.", sys.argv[0], "localhost:31425")
 else:
 	host, port = sys.argv[1].split(":")
 	c = Client(host, int(port))

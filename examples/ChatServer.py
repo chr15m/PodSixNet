@@ -33,19 +33,19 @@ class ChatServer(Server):
 	def __init__(self, *args, **kwargs):
 		Server.__init__(self, *args, **kwargs)
 		self.players = WeakKeyDictionary()
-		print 'Server launched'
+		print('Server launched')
 	
 	def Connected(self, channel, addr):
 		self.AddPlayer(channel)
 	
 	def AddPlayer(self, player):
-		print "New Player" + str(player.addr)
+		print("New Player" + str(player.addr))
 		self.players[player] = True
 		self.SendPlayers()
-		print "players", [p for p in self.players]
+		print("players", [p for p in self.players])
 	
 	def DelPlayer(self, player):
-		print "Deleting Player" + str(player.addr)
+		print("Deleting Player" + str(player.addr))
 		del self.players[player]
 		self.SendPlayers()
 	
@@ -62,8 +62,8 @@ class ChatServer(Server):
 
 # get command line argument of server, port
 if len(sys.argv) != 2:
-	print "Usage:", sys.argv[0], "host:port"
-	print "e.g.", sys.argv[0], "localhost:31425"
+	print("Usage:", sys.argv[0], "host:port")
+	print("e.g.", sys.argv[0], "localhost:31425")
 else:
 	host, port = sys.argv[1].split(":")
 	s = ChatServer(localaddr=(host, int(port)))
