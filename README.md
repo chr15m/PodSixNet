@@ -16,9 +16,11 @@ Install
 
 First make sure you have [Python](http://python.org/) 2.4 or greater installed.
 
+A python3 version of PodSixNet is maintained in the [python3 branch](https://github.com/chr15m/PodSixNet/tree/python3).
+
 Next you'll want to get the PodSixNet source.
 
-The module is found inside a subdirectory called PodSixNet within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the PodSixNet sub-directory into your own project and then do `import PodSixNet`, or else you can run `sudo setup.py install` to install PodSixNet into your Python path. Use `sudo setup.py develop` if you want to stay up to date with the cutting edge and still be able to svn/bzr up every now and then.
+The module is found inside a subdirectory called PodSixNet within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the PodSixNet sub-directory into your own project and then do `import PodSixNet`, or else you can run `sudo python setup.py install` to install PodSixNet into your Python path. Use `sudo python setup.py develop` if you want to stay up to date with the cutting edge and still be able to svn/bzr up every now and then.
 
 By default PodSixNet uses a binary encoder to transfer data over the network, but it can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that can't read the 'rencode' binary format, such as Javascript.
 
