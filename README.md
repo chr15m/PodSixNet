@@ -51,10 +51,10 @@ You will need to subclass two classes in order to make your own server. Each tim
 	
 	class ClientChannel(Channel):
 	
-		def Network(data):
+		def Network(self, data):
 			print data
 		
-		def Network_myaction(data):
+		def Network_myaction(self, data):
 			print "myaction:", data
 
 Whenever the client does `connection.Send(mydata)`, the `Network()` method will be called. The method `Network_myaction()` will only be called if your data has a key called 'action' with a value of "myaction". In other words if it looks something like this:
@@ -90,7 +90,7 @@ To have a client connect to your new server, you should use the Connection modul
 
 `Connection.connection` is a singleton Channel which connects to the server. You'll only have one of these in your game code, and you'll use it to connect to the server and send messages to the server.
 
-	from Connection import connection
+	from PodSixNet.Connection import connection
 	
 	# connect to the server - optionally pass hostname and port like: ("mccormick.cx", 31425)
 	connection.Connect()
@@ -103,7 +103,7 @@ You'll also need to put the following code once somewhere in your game loop:
 
 Any time you have an object in your game which you want to receive messages from the server, subclass `ConnectionListener`. For example:
 
-	from Connection import ConnectionListener
+	from PodSixNet.Connection import ConnectionListener
 	
 	class MyNetworkListener(ConnectionListener):
 	
@@ -130,7 +130,7 @@ Another class might implement custom methods like `Network_myaction()`, which wi
 
 And the listener would look like this:
 
-	from Connection import ConnectionListener
+	from PodSixNet.Connection import ConnectionListener
 	
 	class MyPlayerListener(ConnectionListener):
 	
