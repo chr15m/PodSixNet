@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+import subprocess
 
 # convert readme to rst format
 try:
@@ -10,11 +11,12 @@ except:
    long_description = ''
 
 setup(
+    version=subprocess.check_output(["git", "tag"]).decode().strip(),
     name='PodSixNet',
     description='Multiplayer networking library for games',
+    long_description=long_description,
     author='Chris McCormick',
     author_email='chris@mccormick.cx',
     url='https://github.com/chr15m/PodSixNet',
     packages=['PodSixNet'],
-    version="0.8",
 )
