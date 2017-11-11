@@ -14,6 +14,15 @@ Here is [another tutorial by Julian Meyer](http://www.raywenderlich.com/38732/mu
 Install
 -------
 
+`pip install PodSixNet`
+
+or
+
+`easy_install PodSixNet`
+
+
+### From source
+
 First make sure you have [Python](http://python.org/) 2.4 or greater installed.
 
 A python3 version of PodSixNet is maintained in the [python3 branch](https://github.com/chr15m/PodSixNet/tree/python3).
