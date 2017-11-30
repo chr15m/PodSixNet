@@ -28,6 +28,10 @@ class ConnectionListener:
 		for data in connection.GetQueue():
 			print( data)
 			[getattr(self, n)(data) for n in ("Network_" + data['action'], "Network") if hasattr(self, n)]
+            	
+	def Send(self, data):
+		""" Convenience method to allow this listener to appear to send network data, whilst actually using connection. """
+		connection.Send(data)
 
 if __name__ == "__main__":
 	from time import sleep
