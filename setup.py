@@ -11,7 +11,7 @@ except:
    long_description = ''
 
 setup(
-    version=subprocess.check_output(["git", "describe", "--tag"]).decode().strip(),
+    version=subprocess.check_output(["git", "describe", "--tag", "--always"]).decode().strip(),
     name='PodSixNet',
     description='Multiplayer networking library for games',
     long_description=long_description,
