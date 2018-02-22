@@ -10,8 +10,10 @@ try:
 except:
    long_description = ''
 
+execfile("PodSixNet/version.py")
+
 setup(
-    version=subprocess.check_output(["git", "describe", "--tag", "--always"]).decode().strip(),
+    version=__version__,
     name='PodSixNet',
     description='Multiplayer networking library for games',
     long_description=long_description,
