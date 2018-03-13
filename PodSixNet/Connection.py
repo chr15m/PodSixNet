@@ -10,7 +10,6 @@ Subclass ConnectionListener in order to have an object that will receive network
 
 from EndPoint import EndPoint
 
-connection = EndPoint()
 
 class ConnectionListener:
 	"""
@@ -19,18 +18,19 @@ class ConnectionListener:
 	For example, a method called "Network_players(self, data)" will be called when a message arrives like:
 		{"action": "players", "number": 5, ....}
 	"""
-	def Connect(self, *args, **kwargs):
-		connection.DoConnect(*args, **kwargs)
+	def Connect(self,url=("127.0.0.1",31425), *args, **kwargs):
+		self.connection = EndPoint(url)
+		self.connection.DoConnect(*args, **kwargs)
 		# check for connection errors:
 		self.Pump()
 	
 	def Pump(self):
-		for data in connection.GetQueue():
+		for data in self.connection.GetQueue():
 			[getattr(self, n)(data) for n in ("Network_" + data['action'], "Network") if hasattr(self, n)]
 	
 	def Send(self, data):
 		""" Convenience method to allow this listener to appear to send network data, whilst actually using connection. """
-		connection.Send(data)
+		self.connection.Send(data)
 
 if __name__ == "__main__":
 	from time import sleep
