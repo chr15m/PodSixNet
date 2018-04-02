@@ -26,7 +26,6 @@ class ConnectionListener:
 	
 	def Pump(self):
 		for data in connection.GetQueue():
-			print( data)
 			[getattr(self, n)(data) for n in ("Network_" + data['action'], "Network") if hasattr(self, n)]
 
 if __name__ == "__main__":
