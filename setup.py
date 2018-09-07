@@ -10,7 +10,7 @@ try:
 except:
    long_description = ''
 
-execfile("PodSixNet/version.py")
+exec(open("PodSixNet/version.py").read())
 
 setup(
     version=__version__,
