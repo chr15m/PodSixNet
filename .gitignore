@@ -1,4 +1,6 @@
 .*.swp
+PodSixNet.egg-info
+*.pyc
 *.sublime-project
 *.sublime-workspace
 MANIFEST
