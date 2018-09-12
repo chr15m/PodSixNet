@@ -1,3 +1,7 @@
+# https://github.com/aresch/rencode
+#
+# This is tweaked to add native tuple type
+# 
 # Original bencode module by Petru Paler, et al.
 #
 # Modifications by Connelly Barnes:
@@ -85,6 +89,7 @@ MAX_INT_LENGTH = 64
 
 # The bencode 'typecodes' such as i, d, etc have been extended and
 # relocated on the base-256 character set.
+CHR_TUPLE = int2byte(58)
 CHR_LIST = int2byte(59)
 CHR_DICT = int2byte(60)
 CHR_INT = int2byte(61)
@@ -117,10 +122,14 @@ STR_FIXED_COUNT = 64
 
 # Lists with length embedded in typecode.
 LIST_FIXED_START = STR_FIXED_START + STR_FIXED_COUNT
-LIST_FIXED_COUNT = 64
+LIST_FIXED_COUNT = 32
+
+# Tuples with length embedded in typecode.
+TUPLE_FIXED_START = LIST_FIXED_START + LIST_FIXED_COUNT
+TUPLE_FIXED_COUNT = 32
 
 # Whether strings should be decoded when loading
-_decode_utf8 = False
+_decode_utf8 = True
 
 
 def decode_int(x, f):
@@ -193,8 +202,14 @@ def decode_list(x, f):
     while x[f:f + 1] != CHR_TERM:
         v, f = decode_func[x[f:f + 1]](x, f)
         r.append(v)
-    return (tuple(r), f + 1)
+    return (r, f + 1)
 
+def decode_tuple(x, f):
+    r, f = [], f + 1
+    while x[f:f + 1] != CHR_TERM:
+        v, f = decode_func[x[f:f + 1]](x, f)
+        r.append(v)
+    return (tuple(r), f + 1)
 
 def decode_dict(x, f):
     r, f = {}, f + 1
@@ -226,6 +241,7 @@ decode_func[b'6'] = decode_string
 decode_func[b'7'] = decode_string
 decode_func[b'8'] = decode_string
 decode_func[b'9'] = decode_string
+decode_func[CHR_TUPLE] = decode_tuple
 decode_func[CHR_LIST] = decode_list
 decode_func[CHR_DICT] = decode_dict
 decode_func[CHR_INT] = decode_int
@@ -261,13 +277,26 @@ def make_fixed_length_list_decoders():
             for _ in range(slen):
                 v, f = decode_func[x[f:f + 1]](x, f)
                 r.append(v)
-            return (tuple(r), f)
+            return (list(r), f)
         return f
     for i in range(LIST_FIXED_COUNT):
         decode_func[int2byte(LIST_FIXED_START + i)] = make_decoder(i)
 
 make_fixed_length_list_decoders()
 
+def make_fixed_length_tuple_decoders():
+    def make_decoder(slen):
+        def f(x, f):
+            r, f = [], f + 1
+            for _ in range(slen):
+                v, f = decode_func[x[f:f + 1]](x, f)
+                r.append(v)
+            return (tuple(r), f)
+        return f
+    for i in range(TUPLE_FIXED_COUNT):
+        decode_func[int2byte(TUPLE_FIXED_START + i)] = make_decoder(i)
+
+make_fixed_length_tuple_decoders()
 
 def make_fixed_length_int_decoders():
     def make_decoder(j):
@@ -297,7 +326,7 @@ def make_fixed_length_dict_decoders():
 make_fixed_length_dict_decoders()
 
 
-def loads(x, decode_utf8=False):
+def loads(x, decode_utf8=True):
     global _decode_utf8
     _decode_utf8 = decode_utf8
     try:
@@ -373,6 +402,16 @@ def encode_list(x, r):
             encode_func[type(i)](i, r)
         r.append(CHR_TERM)
 
+def encode_tuple(x, r):
+    if len(x) < TUPLE_FIXED_COUNT:
+        r.append(int2byte(TUPLE_FIXED_START + len(x)))
+        for i in x:
+            encode_func[type(i)](i, r)
+    else:
+        r.append(CHR_TUPLE)
+        for i in x:
+            encode_func[type(i)](i, r)
+        r.append(CHR_TERM)
 
 def encode_dict(x, r):
     if len(x) < DICT_FIXED_COUNT:
@@ -392,7 +431,7 @@ encode_func[int] = encode_int
 encode_func[long] = encode_int
 encode_func[bytes] = encode_string
 encode_func[list] = encode_list
-encode_func[tuple] = encode_list
+encode_func[tuple] = encode_tuple
 encode_func[dict] = encode_dict
 encode_func[type(None)] = encode_none
 encode_func[unicode] = encode_unicode
