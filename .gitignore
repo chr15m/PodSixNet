@@ -1,4 +1,6 @@
 .*.swp
-
 *.sublime-project
 *.sublime-workspace
+MANIFEST
+dist
+version.py
