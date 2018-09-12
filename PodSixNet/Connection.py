@@ -15,44 +15,44 @@ from PodSixNet.EndPoint import EndPoint
 connection = EndPoint()
 
 class ConnectionListener:
-	"""
-	Looks at incoming data and calls "Network_" methods in self, based on what messages come in.
-	Subclass this to have your own classes monitor incoming network messages.
-	For example, a method called "Network_players(self, data)" will be called when a message arrives like:
-		{"action": "players", "number": 5, ....}
-	"""
-	def Connect(self, *args, **kwargs):
-		connection.DoConnect(*args, **kwargs)
-		# check for connection errors:
-		self.Pump()
-	
-	def Pump(self):
-		for data in connection.GetQueue():
-			[getattr(self, n)(data) for n in ("Network_" + data['action'], "Network") if hasattr(self, n)]
-            	
-	def Send(self, data):
-		""" Convenience method to allow this listener to appear to send network data, whilst actually using connection. """
-		connection.Send(data)
+    """
+    Looks at incoming data and calls "Network_" methods in self, based on what messages come in.
+    Subclass this to have your own classes monitor incoming network messages.
+    For example, a method called "Network_players(self, data)" will be called when a message arrives like:
+        {"action": "players", "number": 5, ....}
+    """
+    def Connect(self, *args, **kwargs):
+        connection.DoConnect(*args, **kwargs)
+        # check for connection errors:
+        self.Pump()
+    
+    def Pump(self):
+        for data in connection.GetQueue():
+            [getattr(self, n)(data) for n in ("Network_" + data['action'], "Network") if hasattr(self, n)]
+                
+    def Send(self, data):
+        """ Convenience method to allow this listener to appear to send network data, whilst actually using connection. """
+        connection.Send(data)
 
 if __name__ == "__main__":
-	from time import sleep
-	from sys import exit
-	class ConnectionTest(ConnectionListener):
-		def Network(self, data):
-			print("Network:", data)
-		
-		def Network_error(self, error):
-			print("error:", error['error'])
-			print("Did you start a server?")
-			exit(-1)
-		
-		def Network_connected(self, data):
-			print("connection test Connected")
-	
-	c = ConnectionTest()
-	
-	c.Connect()
-	while 1:
-		connection.Pump()
-		c.Pump()
-		sleep(0.001)
+    from time import sleep
+    from sys import exit
+    class ConnectionTest(ConnectionListener):
+        def Network(self, data):
+            print("Network:", data)
+        
+        def Network_error(self, error):
+            print("error:", error['error'])
+            print("Did you start a server?")
+            exit(-1)
+        
+        def Network_connected(self, data):
+            print("connection test Connected")
+    
+    c = ConnectionTest()
+    
+    c.Connect()
+    while 1:
+        connection.Pump()
+        c.Pump()
+        sleep(0.001)

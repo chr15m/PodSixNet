@@ -5,16 +5,16 @@ import asynchat
 import asyncore
 
 if float(version[:3]) < 2.5:
-	from asyncore import poll2 as poll
+    from asyncore import poll2 as poll
 else:
-	from asyncore import poll
+    from asyncore import poll
 
 # monkey patch older versions to support maps in asynchat. Yuck.
 if float(version[:3]) < 2.6:
-	def asynchat_monkey_init(self, conn=None, map=None):
-		self.ac_in_buffer = b''
-		self.ac_out_buffer = b''
-		self.producer_fifo = asynchat.fifo()
-		asyncore.dispatcher.__init__ (self, sock=conn, map=map)
-		
-	#asynchat.async_chat.__init__ = asynchat_monkey_init
+    def asynchat_monkey_init(self, conn=None, map=None):
+        self.ac_in_buffer = b''
+        self.ac_out_buffer = b''
+        self.producer_fifo = asynchat.fifo()
+        asyncore.dispatcher.__init__ (self, sock=conn, map=map)
+        
+    #asynchat.async_chat.__init__ = asynchat_monkey_init
