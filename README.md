@@ -23,9 +23,7 @@ or
 
 ### From source
 
-First make sure you have [Python](http://python.org/) 2.4 or greater installed.
-
-A python3 version of PodSixNet is maintained in the [python3 branch](https://github.com/chr15m/PodSixNet/tree/python3).
+First make sure you have [Python](http://python.org/) 2.4 or greater installed (python 3 also works).
 
 Next you'll want to get the PodSixNet source.
 
