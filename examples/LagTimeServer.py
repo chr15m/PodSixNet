@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
 from time import time
