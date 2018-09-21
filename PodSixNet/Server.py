@@ -1,7 +1,7 @@
 from __future__ import print_function
 import socket
 
-from PodSixNet.async import poll, asyncore
+from PodSixNet.asyncwrapper import poll, asyncore
 from PodSixNet.Channel import Channel
 
 class Server(asyncore.dispatcher):

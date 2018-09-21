@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys
 
-from PodSixNet.async import asynchat
+from PodSixNet.asyncwrapper import asynchat
 from PodSixNet.rencode import loads, dumps
 
 class Channel(asynchat.async_chat):

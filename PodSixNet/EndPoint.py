@@ -1,7 +1,7 @@
 # coding=utf-8
 import socket
 
-from PodSixNet.async import poll
+from PodSixNet.asyncwrapper import poll
 from PodSixNet.Channel import Channel
 
 class EndPoint(Channel):

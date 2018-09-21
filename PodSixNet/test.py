@@ -6,7 +6,7 @@ import sys
 from time import sleep, time
 import socket
 
-from PodSixNet.async import poll, asyncore
+from PodSixNet.asyncwrapper import poll, asyncore
 from PodSixNet.Server import Server
 from PodSixNet.Channel import Channel
 from PodSixNet.EndPoint import EndPoint
