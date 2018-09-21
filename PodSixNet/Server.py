@@ -75,11 +75,11 @@ if __name__ == "__main__":
                     self.connected = True
                     print("*Server* Connected() ", channel, "connected on", addr)
             
-            self.server = TestServer(channelClass=ServerChannel)
+            self.server = TestServer(channelClass=ServerChannel, localaddr=("127.0.0.1", 31425))
             
             sender = asyncore.dispatcher(map=self.server._map)
             sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-            sender.connect(("localhost", 31425))
+            sender.connect(("127.0.0.1", 31425))
             self.outgoing = EndPointChannel(sender, map=self.server._map)
             
         def runTest(self):
