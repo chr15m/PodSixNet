@@ -1,0 +1,9 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+install:
+  - echo "__version__='0.0.0-test'" > PodSixNet/version.py
+  - pip install -e .
+script:
+  - python PodSixNet/test.py
