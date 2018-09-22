@@ -7,7 +7,7 @@ from PodSixNet.rencode import loads, dumps
 class Channel(asynchat.async_chat):
     endchars = '\0---\0'
     def __init__(self, conn=None, addr=(), server=None, map=None):
-        asynchat.async_chat.__init__(self, conn, map)
+        asynchat.async_chat.__init__(self, getattr(conn, "socket", conn), map)
         self.addr = addr
         self._server = server
         self._ibuffer = b""
