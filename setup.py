@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 from distutils.core import setup
 import subprocess
 
@@ -10,7 +11,13 @@ try:
 except:
    long_description = ''
 
-exec(open("PodSixNet/version.py").read())
+versionfile = "PodSixNet/version.py"
+if not os.path.isfile(versionfile):
+    # assume git checkout
+    __version__ = subprocess.check_output(["git", "describe", "--tag", "--always"]).strip("\n")
+else:
+    # created by pip
+    exec(open(versionfile).read())
 
 setup(
     version=__version__,
