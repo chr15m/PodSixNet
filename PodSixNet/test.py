@@ -50,7 +50,6 @@ class EndPointTestCase(unittest.TestCase):
         self.count = len(self.outgoing)
         self.lengths = [len(data['data']) for data in self.outgoing]
         
-        
         class ServerChannel(Channel):
             def Network_hello(self, data):
                 self._server.received.append(data)
@@ -93,12 +92,12 @@ class EndPointTestCase(unittest.TestCase):
             
             # see if what we receive from the server is what we expect
             for r in self.server.received:
-                self.failUnless(r == self.outgoing.pop(0))
+                self.assertTrue(r == self.outgoing.pop(0))
             self.server.received = []
             
             # see if what we receive from the client is what we expect
             for r in self.endpoint.received:
-                self.failUnless(r['data'] == "Yeah, we got it: %d elements" % self.lengths.pop(0))
+                self.assertTrue(r['data'] == "Yeah, we got it: %d elements" % self.lengths.pop(0))
             self.endpoint.received = []
             
             sleep(0.001)
@@ -106,8 +105,8 @@ class EndPointTestCase(unittest.TestCase):
         self.assertTrue(self.server.connected, "Server is not connected")
         self.assertTrue(self.endpoint.connected, "Endpoint is not connected")
         
-        self.failUnless(self.server.count == self.count, "Didn't receive the right number of messages")
-        self.failUnless(self.endpoint.count == self.count, "Didn't receive the right number of messages")
+        self.assertTrue(self.server.count == self.count, "Didn't receive the right number of messages")
+        self.assertTrue(self.endpoint.count == self.count, "Didn't receive the right number of messages")
         
         self.endpoint.Close()
         
@@ -160,11 +159,11 @@ class ServerTestCase(unittest.TestCase):
             self.server.Pump()
             self.outgoing.Pump()
             if self.server.received:
-                self.failUnless(self.server.received == self.testdata)
+                self.assertTrue(self.server.received == self.testdata)
                 self.server.received = None
             sleep(0.001)
-        self.failUnless(self.server.connected == True, "Server is not connected")
-        self.failUnless(self.outgoing.connected == True, "Outgoing socket is not connected")
+        self.assertTrue(self.server.connected == True, "Server is not connected")
+        self.assertTrue(self.outgoing.connected == True, "Outgoing socket is not connected")
     
     def tearDown(self):
         pass
