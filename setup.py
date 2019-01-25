@@ -14,7 +14,7 @@ except:
 versionfile = "PodSixNet/version.py"
 if not os.path.isfile(versionfile):
     # assume git checkout
-    __version__ = subprocess.check_output(["git", "describe", "--tag", "--always"]).strip("\n")
+    __version__ = str(subprocess.check_output(["git", "describe", "--tag", "--always"])).strip("\n")
 else:
     # created by pip
     exec(open(versionfile).read())
