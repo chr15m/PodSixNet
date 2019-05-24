@@ -54,41 +54,51 @@ Quick start - Server
 
 You will need to subclass two classes in order to make your own server. Each time a client connects, a new Channel based class will be created, so you should subclass Channel to make your own server-representation-of-a-client class like this:
 
-	from PodSixNet.Channel import Channel
-	
-	class ClientChannel(Channel):
-	
-		def Network(self, data):
-			print data
-		
-		def Network_myaction(self, data):
-			print "myaction:", data
+```python
+from PodSixNet.Channel import Channel
+
+class ClientChannel(Channel):
+
+    def Network(self, data):
+        print data
+
+    def Network_myaction(self, data):
+        print "myaction:", data
+```
 
 Whenever the client does `connection.Send(mydata)`, the `Network()` method will be called. The method `Network_myaction()` will only be called if your data has a key called 'action' with a value of "myaction". In other words if it looks something like this:
 
-	data = {"action": "myaction", "blah": 123, ... }
+```python
+data = {"action": "myaction", "blah": 123, ... }
+```
 
 Next you need to subclass the Server class like this:
 
-	from PodSixNet.Server import Server
-	
-	class MyServer(Server):
-		
-		channelClass = ClientChannel
-		
-		def Connected(self, channel, addr):
-			print 'new connection:', channel
+```python
+    from PodSixNet.Server import Server
+    
+    class MyServer(Server):
+        
+        channelClass = ClientChannel
+        
+        def Connected(self, channel, addr):
+            print 'new connection:', channel
+```
 
 Set `channelClass` to the channel class that you created above. The method `Connected()` will be called whenever a new client connects to your server. See the example servers for an idea of what you might do each time a client connects. You need to call `Server.Pump()` every now and then, probably once per game loop. For example:
 
-	myserver = MyServer()
-	while True:
-		myserver.Pump()
-		sleep(0.0001)
+```python
+    myserver = MyServer()
+    while True:
+        myserver.Pump()
+        sleep(0.0001)
+```
 
 When you want to send data to a specific client/channel, use the Send method of the Channel class:
 
-	channel.Send({"action": "hello", "message": "hello client!"})
+```python
+channel.Send({"action": "hello", "message": "hello client!"})
+```
 
 Quick start - Client
 --------------------
@@ -97,60 +107,72 @@ To have a client connect to your new server, you should use the Connection modul
 
 `Connection.connection` is a singleton Channel which connects to the server. You'll only have one of these in your game code, and you'll use it to connect to the server and send messages to the server.
 
-	from PodSixNet.Connection import connection
-	
-	# connect to the server - optionally pass hostname and port like: ("mccormick.cx", 31425)
-	connection.Connect()
-	
-	connection.Send({"action": "myaction", "blah": 123, "things": [3, 4, 3, 4, 7]})
+```python
+from PodSixNet.Connection import connection
+
+# connect to the server - optionally pass hostname and port like: ("mccormick.cx", 31425)
+connection.Connect()
+
+connection.Send({"action": "myaction", "blah": 123, "things": [3, 4, 3, 4, 7]})
+```
 
 You'll also need to put the following code once somewhere in your game loop:
 
-	connection.Pump()
+```python
+connection.Pump()
+```
 
 Any time you have an object in your game which you want to receive messages from the server, subclass `ConnectionListener`. For example:
 
-	from PodSixNet.Connection import ConnectionListener
-	
-	class MyNetworkListener(ConnectionListener):
-	
-		def Network(self, data):
-			print 'network data:', data
-		
-		def Network_connected(self, data):
-			print "connected to the server"
-		
-		def Network_error(self, data):
-			print "error:", data['error'][1]
-		
-		def Network_disconnected(self, data):
-			print "disconnected from the server"
-		
-		def Network_myaction(data):
-			print "myaction:", data
+```python
+    from PodSixNet.Connection import ConnectionListener
+    
+    class MyNetworkListener(ConnectionListener):
+    
+        def Network(self, data):
+            print 'network data:', data
+        
+        def Network_connected(self, data):
+            print "connected to the server"
+        
+        def Network_error(self, data):
+            print "error:", data['error'][1]
+        
+        def Network_disconnected(self, data):
+            print "disconnected from the server"
+        
+        def Network_myaction(data):
+            print "myaction:", data
+```
 
 Just like in the server case, the network events are received by `Network_*` callback methods, where you should replace '*' with the value in the 'action' key you want to catch. You can implement as many or as few of the above as you like. For example, NetworkGUI would probably only want to listen for the `_connected`, `_disconnected`, and `_error` network events. The data for `_error` always comes in the form of network exceptions, like (111, 'Connection refused') - these are passed straight from the socket layer and are standard socket errors.
 
 Another class might implement custom methods like `Network_myaction()`, which will receive any data that gets sent from the server with an 'action' key that has the name 'myaction'. For example, the server might send a message with the number of players currently connected like so:
 
-	channel.Send({"action": "numplayers", "players": 10})
+```python
+channel.Send({"action": "numplayers", "players": 10})
+```
 
 And the listener would look like this:
 
-	from PodSixNet.Connection import ConnectionListener
-	
-	class MyPlayerListener(ConnectionListener):
-	
-		def Network_numplayers(data):
-			# update gui element displaying the number of currently connected players
-			print data['players']
+```python
+    from PodSixNet.Connection import ConnectionListener
+    
+    class MyPlayerListener(ConnectionListener):
+    
+        def Network_numplayers(data):
+            # update gui element displaying the number of currently connected players
+            print data['players']
+```
 
 You can subclass `ConnectionListener` as many times as you like in your application, and every class you make which subclasses it will receive the network events via named Network callbacks. You should call the `Pump()` method on each object you instantiate once per game loop:
 
-	gui = MyPlayerListener()
-	while 1:
-		connection.Pump()
-		gui.Pump()
+```python
+    gui = MyPlayerListener()
+    while 1:
+        connection.Pump()
+        gui.Pump()
+```
 
 License
 -------
