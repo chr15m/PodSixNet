@@ -51,11 +51,12 @@ class LagTimeServer(Server):
             sleep(0.0001)
 
 # get command line argument of server, port
-if len(sys.argv) != 2:
-    print("Usage:", sys.argv[0], "host:port")
-    print("e.g.", sys.argv[0], "localhost:31425")
-else:
-    host, port = sys.argv[1].split(":")
-    s = LagTimeServer(localaddr=(host, int(port)))
-    s.Launch()
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("Usage:", sys.argv[0], "host:port")
+        print("e.g.", sys.argv[0], "localhost:31425")
+    else:
+        host, port = sys.argv[1].split(":")
+        s = LagTimeServer(localaddr=(host, int(port)))
+        s.Launch()
 

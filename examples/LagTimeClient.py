@@ -37,13 +37,14 @@ class LagTimeClient(ConnectionListener):
         print('Server disconnected')
         exit()
 
-if len(sys.argv) != 2:
-    print("Usage:", sys.argv[0], "host:port")
-    print("e.g.", sys.argv[0], "localhost:31425")
-else:
-    host, port = sys.argv[1].split(":")
-    c = LagTimeClient(host, int(port))
-    while 1:
-        connection.Pump()
-        c.Pump()
-        sleep(0.001)
+if __name__ == __main__:
+    if len(sys.argv) != 2:
+        print("Usage:", sys.argv[0], "host:port")
+        print("e.g.", sys.argv[0], "localhost:31425")
+    else:
+        host, port = sys.argv[1].split(":")
+        c = LagTimeClient(host, int(port))
+        while 1:
+            connection.Pump()
+            c.Pump()
+            sleep(0.001)
