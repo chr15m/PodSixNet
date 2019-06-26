@@ -6,5 +6,6 @@ PodSixNet.egg-info
 MANIFEST
 build/
 dist/
+examples/__pycache__/
 PodSixNet/__pycache__/
 version.py
