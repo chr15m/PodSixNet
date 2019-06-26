@@ -5,8 +5,8 @@ from weakref import WeakKeyDictionary
 from time import time
 import sys
 
-from PodSixNet.Server import Server
-from PodSixNet.Channel import Channel
+from PodSixNet.server import Server
+from PodSixNet.channel import Channel
 
 class LagTimeChannel(Channel):
     """
@@ -17,7 +17,7 @@ class LagTimeChannel(Channel):
         self.count = 0
         self.times = []
     
-    def Close(self):
+    def close(self):
         print(self, 'Client disconnected')
     
     ##################################
@@ -31,23 +31,23 @@ class LagTimeChannel(Channel):
     def Ping(self):
         print(self, "Ping:", self.count)
         self.times.append(time())
-        self.Send({"action": "ping", "count": self.count})
+        self.send({"action": "ping", "count": self.count})
         self.count += 1
 
 class LagTimeServer(Server):
-    channelClass = LagTimeChannel
+    channel_class = LagTimeChannel
     
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
         print('Server launched')
     
-    def Connected(self, channel, addr):
+    def connected(self, channel, addr):
         print(channel, "Channel connected")
         channel.Ping()
     
     def Launch(self):
         while True:
-            self.Pump()
+            self.pump()
             sleep(0.0001)
 
 # get command line argument of server, port

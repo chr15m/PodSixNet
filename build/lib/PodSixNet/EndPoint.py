@@ -42,7 +42,7 @@ class EndPoint(Channel):
     
     def close(self):
         self.isConnected = False
-        self.close()
+        self.async_chat.close()
         self.queue.append({"action": "disconnected"})
     
     def connected(self):
