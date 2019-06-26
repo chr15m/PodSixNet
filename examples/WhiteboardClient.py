@@ -3,18 +3,18 @@ from __future__ import print_function
 import sys
 from time import sleep
 
-from PodSixNet.Connection import connection, ConnectionListener
+from PodSixNet.connection import connection, ConnectionListener
 from Whiteboard import Whiteboard
 
 class Client(ConnectionListener, Whiteboard):
     def __init__(self, host, port):
-        self.Connect((host, port))
+        self.connect((host, port))
         self.players = {}
         Whiteboard.__init__(self)
     
     def Loop(self):
-        self.Pump()
-        connection.Pump()
+        self.pump()
+        connection.pump()
         self.Events()
         self.Draw([(self.players[p]['color'], self.players[p]['lines']) for p in self.players])
         
@@ -28,13 +28,13 @@ class Client(ConnectionListener, Whiteboard):
     #    connection.Send({"action": "draw", "point": e.pos})
     
     def PenDown(self, e):
-        connection.Send({"action": "startline", "point": e.pos})
+        connection.send({"action": "startline", "point": e.pos})
     
     def PenMove(self, e):
-        connection.Send({"action": "drawpoint", "point": e.pos})
+        connection.send({"action": "drawpoint", "point": e.pos})
     
     def PenUp(self, e):
-        connection.Send({"action": "drawpoint", "point": e.pos})
+        connection.send({"action": "drawpoint", "point": e.pos})
     
     ###############################
     ### Network event callbacks ###
@@ -76,7 +76,7 @@ class Client(ConnectionListener, Whiteboard):
         import traceback
         traceback.print_exc()
         self.statusLabel = data['error'][1]
-        connection.Close()
+        connection.close()
     
     def Network_disconnected(self, data):
         self.statusLabel += " - disconnected"
