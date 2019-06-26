@@ -4,5 +4,7 @@ PodSixNet.egg-info
 *.sublime-project
 *.sublime-workspace
 MANIFEST
-dist
+build/
+dist/
+PodSixNet/__pycache__/
 version.py
