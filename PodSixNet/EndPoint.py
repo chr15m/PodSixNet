@@ -2,9 +2,9 @@
 import socket
 
 from PodSixNet.asyncwrapper import poll
-from PodSixNet.Channel import channel
+from PodSixNet.channel import Channel
 
-class EndPoint(channel):
+class EndPoint(Channel):
     """
     The endpoint queues up all network events for other classes to read.
     """
@@ -17,11 +17,11 @@ class EndPoint(channel):
         else:
             self._map = map
     
-    def DoConnect(self, address=None):
+    def do_connect(self, address=None):
         if address:
             self.address = address
         try:
-            channel.__init__(self, map=self._map)
+            Channel.__init__(self, map=self._map)
             self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             self.connect(self.address)
@@ -30,22 +30,22 @@ class EndPoint(channel):
         except socket.error as e:
             self.queue.append({"action": "error", "error": e.args})
     
-    def GetQueue(self):
+    def get_queue(self):
         return self.queue
     
-    def Pump(self):
-        channel.pump(self)
+    def pump(self):
+        Channel.pump(self)
         self.queue = []
         poll(map=self._map)
     
     # methods to add network data to the queue depending on network events
     
-    def Close(self):
+    def close(self):
         self.isConnected = False
         self.close()
         self.queue.append({"action": "disconnected"})
     
-    def Connected(self):
+    def connected(self):
         self.queue.append({"action": "socketConnect"})
     
     def Network_connected(self, data):

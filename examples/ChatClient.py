@@ -4,7 +4,7 @@ import sys
 from time import sleep
 from sys import stdin, exit
 
-from PodSixNet.Connection import connection, ConnectionListener
+from PodSixNet.connection import connection, ConnectionListener
 
 # This example uses Python threads to manage async input from sys.stdin.
 # This is so that I can receive input from the console whilst running the server.
@@ -13,7 +13,7 @@ from _thread import *
 
 class Client(ConnectionListener):
     def __init__(self, host, port):
-        self.Connect((host, port))
+        self.connect((host, port))
         print("Chat client started")
         print("Ctrl-C to exit")
         # get a nickname from the user before starting
@@ -23,8 +23,8 @@ class Client(ConnectionListener):
         t = start_new_thread(self.InputLoop, ())
     
     def Loop(self):
-        connection.Pump()
-        self.Pump()
+        connection.pump()
+        self.pump()
     
     def InputLoop(self):
         # horrid threaded input loop
@@ -49,7 +49,7 @@ class Client(ConnectionListener):
     
     def Network_error(self, data):
         print('error:', data['error'][1])
-        connection.Close()
+        connection.close()
     
     def Network_disconnected(self, data):
         print('Server disconnected')

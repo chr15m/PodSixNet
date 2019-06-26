@@ -4,16 +4,16 @@ import sys
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
 
-from PodSixNet.Server import Server
-from PodSixNet.Channel import channel
+from PodSixNet.server import Server
+from PodSixNet.channel import Channel
 
-class ClientChannel(channel):
+class ClientChannel(Channel):
     """
     This is the server representation of a single connected client.
     """
     def __init__(self, *args, **kwargs):
         self.nickname = "anonymous"
-        channel.__init__(self, *args, **kwargs)
+        Channel.__init__(self, *args, **kwargs)
     
     def close(self):
         self._server.DelPlayer(self)
@@ -30,14 +30,14 @@ class ClientChannel(channel):
         self._server.SendPlayers()
 
 class ChatServer(Server):
-    channelClass = ClientChannel
+    channel_class = ClientChannel
     
     def __init__(self, *args, **kwargs):
         Server.__init__(self, *args, **kwargs)
         self.players = WeakKeyDictionary()
         print('Server launched')
     
-    def Connected(self, channel, addr):
+    def connected(self, channel, addr):
         self.AddPlayer(channel)
     
     def AddPlayer(self, player):
@@ -59,7 +59,7 @@ class ChatServer(Server):
     
     def Launch(self):
         while True:
-            self.Pump()
+            self.pump()
             sleep(0.0001)
 
 # get command line argument of server, port

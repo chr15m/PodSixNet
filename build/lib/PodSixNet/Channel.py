@@ -4,14 +4,11 @@ import sys
 from PodSixNet.asyncwrapper import asynchat
 from PodSixNet.rencode import loads, dumps
 
-class fake_assync_chat(asynchat.async_chat):
-    def __init__(self, *args, **kwargs):
-        super(fake_async_chat, self).__init__(*args, **kwargs)
-
-class channel:
+class Channel:
     endchars = '\0---\0'
     def __init__(self, conn=None, addr=(), server=None, map=None):
         self.async_chat = asynchat.async_chat(getattr(conn, "socket", conn), map)
+        # since async_chat requires some methods to be implemented, we'll override them by assigning our own
         self.async_chat.collect_incoming_data = self.collect_incoming_data
         self.async_chat.found_terminator = self.found_terminator
         self.addr = addr
