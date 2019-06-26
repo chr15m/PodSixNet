@@ -18,7 +18,7 @@ class Client(ConnectionListener):
         print("Ctrl-C to exit")
         # get a nickname from the user before starting
         print("Enter your nickname: ")
-        connection.Send({"action": "nickname", "nickname": stdin.readline().rstrip("\n")})
+        connection.send({"action": "nickname", "nickname": stdin.readline().rstrip("\n")})
         # launch our threaded input loop
         t = start_new_thread(self.InputLoop, ())
     
@@ -30,7 +30,7 @@ class Client(ConnectionListener):
         # horrid threaded input loop
         # continually reads from stdin and sends whatever is typed to the server
         while 1:
-            connection.Send({"action": "message", "message": stdin.readline().rstrip("\n")})
+            connection.send({"action": "message", "message": stdin.readline().rstrip("\n")})
     
     #######################################
     ### Network event/message callbacks ###

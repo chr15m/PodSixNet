@@ -5,17 +5,17 @@ from time import sleep, localtime
 from weakref import WeakKeyDictionary
 
 from PodSixNet.Server import Server
-from PodSixNet.Channel import Channel
+from PodSixNet.Channel import channel
 
-class ClientChannel(Channel):
+class ClientChannel(channel):
     """
     This is the server representation of a single connected client.
     """
     def __init__(self, *args, **kwargs):
         self.nickname = "anonymous"
-        Channel.__init__(self, *args, **kwargs)
+        channel.__init__(self, *args, **kwargs)
     
-    def Close(self):
+    def close(self):
         self._server.DelPlayer(self)
     
     ##################################
@@ -55,7 +55,7 @@ class ChatServer(Server):
         self.SendToAll({"action": "players", "players": [p.nickname for p in self.players]})
     
     def SendToAll(self, data):
-        [p.Send(data) for p in self.players]
+        [p.send(data) for p in self.players]
     
     def Launch(self):
         while True:
