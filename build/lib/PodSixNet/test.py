@@ -7,9 +7,9 @@ from time import sleep, time
 import socket
 
 from PodSixNet.asyncwrapper import poll, asyncore
-from PodSixNet.Server import Server
-from PodSixNet.Channel import Channel
-from PodSixNet.EndPoint import EndPoint
+from PodSixNet.server import Server
+from PodSixNet.channel import Channel
+from PodSixNet.endpoint import EndPoint
 
 class FailEndPointTestCase(unittest.TestCase):
     def setUp(self):
@@ -19,14 +19,14 @@ class FailEndPointTestCase(unittest.TestCase):
                 EndPoint.__init__(self, ("localhost", 31429))
                 self.result = ""
             
-            def Error(self, error):
+            def error(self, error):
                 self.result = error
             
             def Test(self):
-                self.DoConnect()
+                self.do_connect()
                 start = time()
                 while not self.result and time() - start < 10:
-                    self.Pump()
+                    self.pump()
                     sleep(0.001)
         
         self.endpoint_bad = FailEndPoint()
@@ -54,7 +54,7 @@ class EndPointTestCase(unittest.TestCase):
             def Network_hello(self, data):
                 self._server.received.append(data)
                 self._server.count += 1
-                self.Send({"action": "gotit", "data": "Yeah, we got it: " + str(len(data['data'])) + " elements"})
+                self.send({"action": "gotit", "data": "Yeah, we got it: " + str(len(data['data'])) + " elements"})
         
         class TestEndPoint(EndPoint):
             received = []
@@ -74,21 +74,21 @@ class EndPointTestCase(unittest.TestCase):
             received = []
             count = 0
             
-            def Connected(self, channel, addr):
+            def connected(self, channel, addr):
                 self.connected = True
         
-        self.server = TestServer(channelClass=ServerChannel, localaddr=("127.0.0.1", 31426))
+        self.server = TestServer(channel_class=ServerChannel, localaddr=("127.0.0.1", 31426))
         self.endpoint = TestEndPoint(("127.0.0.1", 31426))
     
     def runTest(self):
-        self.endpoint.DoConnect()
+        self.endpoint.do_connect()
         for o in self.outgoing:
-            self.endpoint.Send(o)
+            self.endpoint.send(o)
         
         
         for x in range(50):
-            self.server.Pump()
-            self.endpoint.Pump()
+            self.server.pump()
+            self.endpoint.pump()
             
             # see if what we receive from the server is what we expect
             for r in self.server.received:
@@ -108,7 +108,7 @@ class EndPointTestCase(unittest.TestCase):
         self.assertTrue(self.server.count == self.count, "Didn't receive the right number of messages")
         self.assertTrue(self.endpoint.count == self.count, "Didn't receive the right number of messages")
         
-        self.endpoint.Close()
+        self.endpoint.close()
         
     
     def tearDown(self):
@@ -129,23 +129,23 @@ class ServerTestCase(unittest.TestCase):
         
         class EndPointChannel(Channel):
             connected = False
-            def Connected(self):
+            def connected(self):
                 print("*EndPoint* Connected()")
             
             def Network_connected(self, data):
                 self.connected = True
                 print("*EndPoint* Network_connected(", data, ")")
                 print("*EndPoint* initiating send")
-                self.Send(ServerTestCase.testdata)
+                self.send(ServerTestCase.testdata)
         
         class TestServer(Server):
             connected = False
             received = None
-            def Connected(self, channel, addr):
+            def connected(self, channel, addr):
                 self.connected = True
                 print("*Server* Connected() ", channel, "connected on", addr)
         
-        self.server = TestServer(channelClass=ServerChannel, localaddr=("127.0.0.1", 31427))
+        self.server = TestServer(channel_class=ServerChannel, localaddr=("127.0.0.1", 31427))
         
         sender = asyncore.dispatcher(map=self.server._map)
         sender.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -156,8 +156,8 @@ class ServerTestCase(unittest.TestCase):
         from time import sleep
         print("*** polling for half a second")
         for x in range(250):
-            self.server.Pump()
-            self.outgoing.Pump()
+            self.server.pump()
+            self.outgoing.pump()
             if self.server.received:
                 self.assertTrue(self.server.received == self.testdata)
                 self.server.received = None
