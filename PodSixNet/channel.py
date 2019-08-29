@@ -26,6 +26,10 @@ class Channel:
     def socket(self):
         return self.async_chat.socket
 
+    @socket.setter
+    def socket(self, value):
+        self.async_chat.socket = value
+
     def connect(self, addr):
         """calls the connect function that the async_chat instance has inherited"""
         return self.async_chat.connect(addr)

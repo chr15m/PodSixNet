@@ -30,7 +30,7 @@ class Client(ConnectionListener):
         # horrid threaded input loop
         # continually reads from stdin and sends whatever is typed to the server
         while 1:
-            connection.send({"action": "message", "message": stdin.readline().rstrip("\n")})
+            connection.send({"action": "message", "message": stdin.readline().rstrip("\n".encode())})
     
     #######################################
     ### Network event/message callbacks ###
