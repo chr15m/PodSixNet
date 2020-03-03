@@ -34,7 +34,7 @@ class FailEndPointTestCase(unittest.TestCase):
     def runTest(self):
         self.endpoint_bad.Test()
         want = "[Errno 111] Connection refused"
-        self.assertEqual(str(self.endpoint_bad.result), str(want), "Socket got %s instead of %s" % (str(self.endpoint_bad.result), str(want)))
+        self.assertEqual(self.endpoint_bad.is_connected, False)
     
     def tearDown(self):
         del self.endpoint_bad
