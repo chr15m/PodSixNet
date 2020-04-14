@@ -174,6 +174,18 @@ You can subclass `ConnectionListener` as many times as you like in your applicat
         gui.Pump()
 ```
 
+Contributors
+------------
+
+Thank you very much to the following contributors.
+
+ * Joseph Parker @selfsame
+ * Paul @pauliyobo
+ * Paul @pfornia
+ * Victor Le @Coac
+ * Isaac @qwertyquerty
+ * Thomas Doylend @tdoylend
+
 License
 -------
 
