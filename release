@@ -1,5 +1,5 @@
 #!/bin/sh
 
-echo "__version__='`git describe --tag --always`'" > podsixnet2/version.py
+echo "__version__=\"`git describe --tag --always`\"" > podsixnet2/version.py
 python setup.py sdist
 twine upload dist/*
