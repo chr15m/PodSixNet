@@ -10,7 +10,7 @@ Subclass ConnectionListener in order to have an object that will receive network
 
 from __future__ import print_function
 
-from PodSixNet.EndPoint import EndPoint
+from podsixnet2.EndPoint import EndPoint
 
 connection = EndPoint()
 

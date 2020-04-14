@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys
 from time import sleep
 
-from PodSixNet.Connection import connection, ConnectionListener
+from podsixnet2.Connection import connection, ConnectionListener
 from Whiteboard import Whiteboard
 
 class Client(ConnectionListener, Whiteboard):

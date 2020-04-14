@@ -5,8 +5,8 @@ from weakref import WeakKeyDictionary
 from time import time
 import sys
 
-from PodSixNet.Server import Server
-from PodSixNet.Channel import Channel
+from podsixnet2.Server import Server
+from podsixnet2.Channel import Channel
 
 class LagTimeChannel(Channel):
     """

@@ -6,10 +6,10 @@ import sys
 from time import sleep, time
 import socket
 
-from PodSixNet.asyncwrapper import poll, asyncore
-from PodSixNet.Server import Server
-from PodSixNet.Channel import Channel
-from PodSixNet.EndPoint import EndPoint
+from podsixnet2.asyncwrapper import poll, asyncore
+from podsixnet2.Server import Server
+from podsixnet2.Channel import Channel
+from podsixnet2.EndPoint import EndPoint
 
 class FailEndPointTestCase(unittest.TestCase):
     def setUp(self):

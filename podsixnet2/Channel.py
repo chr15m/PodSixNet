@@ -1,8 +1,8 @@
 from __future__ import print_function
 import sys
 
-from PodSixNet.asyncwrapper import asynchat
-from PodSixNet.rencode import loads, dumps
+from podsixnet2.asyncwrapper import asynchat
+from podsixnet2.rencode import loads, dumps
 
 class Channel(asynchat.async_chat):
     endchars = '\0---\0'
