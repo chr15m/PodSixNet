@@ -10,7 +10,7 @@ Subclass ConnectionListener in order to have an object that will receive network
 
 from __future__ import print_function
 
-from podsixnet2.EndPoint import EndPoint
+from PodSixNet.endpoint import EndPoint
 
 connection = EndPoint()
 
@@ -21,18 +21,18 @@ class ConnectionListener:
     For example, a method called "Network_players(self, data)" will be called when a message arrives like:
         {"action": "players", "number": 5, ....}
     """
-    def Connect(self, *args, **kwargs):
-        connection.DoConnect(*args, **kwargs)
+    def connect(self, *args, **kwargs):
+        connection.do_connect(*args, **kwargs)
         # check for connection errors:
-        self.Pump()
+        self.pump()
     
-    def Pump(self):
-        for data in connection.GetQueue():
+    def pump(self):
+        for data in connection.get_queue():
             [getattr(self, n)(data) for n in ("Network_" + data['action'], "Network") if hasattr(self, n)]
                 
-    def Send(self, data):
+    def send(self, data):
         """ Convenience method to allow this listener to appear to send network data, whilst actually using connection. """
-        connection.Send(data)
+        connection.send(data)
 
 if __name__ == "__main__":
     from time import sleep
@@ -51,8 +51,8 @@ if __name__ == "__main__":
     
     c = ConnectionTest()
     
-    c.Connect()
+    c.connect()
     while 1:
-        connection.Pump()
-        c.Pump()
+        connection.pump()
+        c.pump()
         sleep(0.001)

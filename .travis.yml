@@ -4,7 +4,7 @@ python:
   - "3.4"
   - "3.7-dev"
 install:
-  - echo "__version__='0.0.0-test'" > podsixnet2/version.py
+  - echo "__version__='0.0.0-test'" > PodSixNet/version.py
   - pip install -e .
 script:
-  - python podsixnet2/test.py
+  - python PodSixNet/test.py

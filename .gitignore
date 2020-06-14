@@ -1,8 +1,11 @@
 .*.swp
-*.egg-info
+PodSixNet.egg-info
 *.pyc
 *.sublime-project
 *.sublime-workspace
 MANIFEST
-dist
+build/
+dist/
+examples/__pycache__/
+PodSixNet/__pycache__/
 version.py

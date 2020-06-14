@@ -5,8 +5,8 @@ from time import sleep, localtime
 from random import randint
 from weakref import WeakKeyDictionary
 
-from podsixnet2.Server import Server
-from podsixnet2.Channel import Channel
+from PodSixNet.server import Server
+from PodSixNet.channel import Channel
 
 class ServerChannel(Channel):
     """
@@ -24,7 +24,7 @@ class ServerChannel(Channel):
         data.update({"id": self.id})
         self._server.SendToAll(data)
     
-    def Close(self):
+    def close(self):
         self._server.DelPlayer(self)
     
     ##################################
@@ -40,7 +40,7 @@ class ServerChannel(Channel):
         self.PassOn(data)
 
 class WhiteboardServer(Server):
-    channelClass = ServerChannel
+    channel_class = ServerChannel
     
     def __init__(self, *args, **kwargs):
         self.id = 0
@@ -52,7 +52,7 @@ class WhiteboardServer(Server):
         self.id += 1
         return self.id
     
-    def Connected(self, channel, addr):
+    def connected(self, channel, addr):
         self.AddPlayer(channel)
     
     def AddPlayer(self, player):
@@ -74,7 +74,7 @@ class WhiteboardServer(Server):
     
     def Launch(self):
         while True:
-            self.Pump()
+            self.pump()
             sleep(0.0001)
 
 # get command line argument of server, port

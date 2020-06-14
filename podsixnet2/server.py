@@ -1,15 +1,15 @@
 from __future__ import print_function
 import socket
 
-from podsixnet2.asyncwrapper import poll, asyncore
-from podsixnet2.Channel import Channel
+from PodSixNet.asyncwrapper import poll, asyncore
+from PodSixNet.channel import Channel
 
 class Server(asyncore.dispatcher):
-    channelClass = Channel
+    channel_class = Channel
     
-    def __init__(self, channelClass=None, localaddr=("127.0.0.1", 5071), listeners=5):
-        if channelClass:
-            self.channelClass = channelClass
+    def __init__(self, channel_class=None, localaddr=("127.0.0.1", 5071), listeners=5):
+        if channel_class:
+            self.channel_class = channel_class
         self._map = {}
         self.channels = []
         asyncore.dispatcher.__init__(self, map=self._map)
@@ -29,12 +29,12 @@ class Server(asyncore.dispatcher):
             print('warning: server accept() threw EWOULDBLOCK')
             return
         print("connection")
-        self.channels.append(self.channelClass(conn, addr, self, self._map))
-        self.channels[-1].Send({"action": "connected"})
-        if hasattr(self, "Connected"):
-            self.Connected(self.channels[-1], addr)
+        self.channels.append(self.channel_class(conn, addr, self, self._map))
+        self.channels[-1].send({"action": "connected"})
+        if hasattr(self, "connected"):
+            self.connected(self.channels[-1], addr)
     
-    def Pump(self):
-        [c.Pump() for c in self.channels]
+    def pump(self):
+        [c.pump() for c in self.channels]
         poll(map=self._map)
 
