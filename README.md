@@ -1,3 +1,5 @@
+*Note:* this project uses deprecated libraries ([#46](https://github.com/chr15m/PodSixNet/issues/46)) and isn't actively maintained any more.
+
 PodSixNet - lightweight multiplayer networking library for Python games
 -----------------------------------------------------------------------
 
