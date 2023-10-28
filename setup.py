@@ -11,21 +11,21 @@ try:
 except:
    long_description = ''
 
-versionfile = "PodSixNet/version.py"
+versionfile = "podsixnet/version.py"
 if not os.path.isfile(versionfile):
     # assume git checkout
-    __version__ = str(subprocess.check_output(["git", "describe", "--tag", "--always"])).strip("\n")
+    __version__ = subprocess.check_output(["git", "describe", "--tag", "--always"]).decode("utf8").strip("\n")
 else:
     # created by pip
     exec(open(versionfile).read())
 
 setup(
     version=__version__,
-    name='PodSixNet',
+    name='podsixnet2',
     description='Multiplayer networking library for games',
     long_description=long_description,
     author='Chris McCormick',
     author_email='chris@mccormick.cx',
     url='https://github.com/chr15m/PodSixNet',
-    packages=['PodSixNet'],
+    packages=['podsixnet2'],
 )

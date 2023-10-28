@@ -3,35 +3,35 @@
 PodSixNet - lightweight multiplayer networking library for Python games
 -----------------------------------------------------------------------
 
-PodSixNet is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and rencode.py (included) to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
+PodSixNet (now called `podsixnet2`) is a lightweight network layer designed to make it easy to write multiplayer games in Python. It uses Python's built in asyncore library and rencode.py (included) to asynchronously serialise network events and arbitrary data structures, and deliver them to your high level classes through simple callback methods.
 
 Each class within your game client which wants to receive network events, subclasses the ConnectionListener class and then implements `Network_*` methods to catch specific user-defined events from the server. You don't have to wait for buffers to fill, or check sockets for waiting data or anything like that, just do `connection.Pump()` once per game loop and the library will handle everything else for you, passing off events to all classes that are listening. Sending data back to the server is just as easy, using `connection.Send(mydata)`. Likewise on the server side, events are propagated to `Network_*` method callbacks and data is sent back to clients with the `client.Send(mydata)` method.
 
-The [PodSixNet mailing list](http://groups.google.com/group/podsixnet) is good for getting help from other users.
+The [podsixnet2 mailing list](http://groups.google.com/group/podsixnet) is good for getting help from other users.
 
-For users of the Construct game making environment for Windows, there is a tutorial on doing multiplayer networking with PodSixNet, [here](http://www.scirra.com/forum/viewtopic.php?f=8&t=6299). Thanks to Dave Chabo for contributing this tutorial.
+For users of the Construct game making environment for Windows, there is a tutorial on doing multiplayer networking with podsixnet2, [here](http://www.scirra.com/forum/viewtopic.php?f=8&t=6299). Thanks to Dave Chabo for contributing this tutorial.
 
 Here is [another tutorial by Julian Meyer](http://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python).
 
 Install
 -------
 
-`pip install PodSixNet`
+`pip install podsixnet2`
 
 or
 
-`easy_install PodSixNet`
+`easy_install podsixnet2`
 
 
 ### From source
 
 First make sure you have [Python](http://python.org/) 2.4 or greater installed (python 3 also works).
 
-Next you'll want to get the PodSixNet source.
+Next you'll want to get the podsixnet2 source.
 
-The module is found inside a subdirectory called PodSixNet within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the PodSixNet sub-directory into your own project and then do `import PodSixNet`, or else you can run `sudo python setup.py install` to install PodSixNet into your Python path. Use `sudo python setup.py develop` if you want to stay up to date with the cutting edge and still be able to svn/bzr up every now and then.
+The module is found inside a subdirectory called podsixnet2 within the top level folder. There's an `__init__.py` inside there, so you can just copy or symlink the podsixnet2 sub-directory into your own project and then do `import podsixnet2`, or else you can run `sudo python setup.py install` to install podsixnet2 into your Python path. Use `sudo python setup.py develop` if you want to stay up to date with the cutting edge and still be able to svn/bzr up every now and then.
 
-By default PodSixNet uses a binary encoder to transfer data over the network, but it can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that can't read the 'rencode' binary format, such as Javascript.
+By default podsixnet2 uses a binary encoder to transfer data over the network, but it can optionally use the [JSON](http://json.org/) format or other formats supported by a serialiser which has 'dumps' and 'loads' methods. If you want to serialise your data using JSON you can change the first line of Channel.py to 'from simplejson import dumps, loads' or use the built-in json library in Python 2.6 or higher. This will allow you to write game clients in languages that can't read the 'rencode' binary format, such as Javascript.
 
 Examples
 --------
@@ -57,7 +57,7 @@ Quick start - Server
 You will need to subclass two classes in order to make your own server. Each time a client connects, a new Channel based class will be created, so you should subclass Channel to make your own server-representation-of-a-client class like this:
 
 ```python
-from PodSixNet.Channel import Channel
+from podsixnet2.Channel import Channel
 
 class ClientChannel(Channel):
 
@@ -77,7 +77,7 @@ data = {"action": "myaction", "blah": 123, ... }
 Next you need to subclass the Server class like this:
 
 ```python
-    from PodSixNet.Server import Server
+    from podsixnet2.Server import Server
     
     class MyServer(Server):
         
@@ -110,7 +110,7 @@ To have a client connect to your new server, you should use the Connection modul
 `Connection.connection` is a singleton Channel which connects to the server. You'll only have one of these in your game code, and you'll use it to connect to the server and send messages to the server.
 
 ```python
-from PodSixNet.Connection import connection
+from podsixnet2.Connection import connection
 
 # connect to the server - optionally pass hostname and port like: ("mccormick.cx", 31425)
 connection.Connect()
@@ -127,7 +127,7 @@ connection.Pump()
 Any time you have an object in your game which you want to receive messages from the server, subclass `ConnectionListener`. For example:
 
 ```python
-    from PodSixNet.Connection import ConnectionListener
+    from podsixnet2.Connection import ConnectionListener
     
     class MyNetworkListener(ConnectionListener):
     
@@ -158,7 +158,7 @@ channel.Send({"action": "numplayers", "players": 10})
 And the listener would look like this:
 
 ```python
-    from PodSixNet.Connection import ConnectionListener
+    from podsixnet2.Connection import ConnectionListener
     
     class MyPlayerListener(ConnectionListener):
     
@@ -176,14 +176,26 @@ You can subclass `ConnectionListener` as many times as you like in your applicat
         gui.Pump()
 ```
 
+Contributors
+------------
+
+Thank you very much to the following contributors.
+
+ * Joseph Parker @selfsame
+ * Paul @pauliyobo
+ * Paul @pfornia
+ * Victor Le @Coac
+ * Isaac @qwertyquerty
+ * Thomas Doylend @tdoylend
+
 License
 -------
 
 Copyright [Chris McCormick](http://mccormick.cx/), 2009-2015.
 
-PodSixNet is licensed under the terms of the LGPL v3.0 or higher. See the file called [COPYING](COPYING) for details.
+podsixnet2 is licensed under the terms of the LGPL v3.0 or higher. See the file called [COPYING](COPYING) for details.
 
-This basically means that you can use it in most types of projects (commercial or otherwise), but if you make changes to the PodSixNet code you must make the modified code available with the distribution of your software. Hopefully you'll tell us about it so we can incorporate your changes. I am not a lawyer, so please read the license carefully to understand your rights with respect to this code.
+This basically means that you can use it in most types of projects (commercial or otherwise), but if you make changes to the podsixnet2 code you must make the modified code available with the distribution of your software. Hopefully you'll tell us about it so we can incorporate your changes. I am not a lawyer, so please read the license carefully to understand your rights with respect to this code.
 
 Why not use Twisted instead?
 ---------------------------

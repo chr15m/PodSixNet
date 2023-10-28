@@ -1,5 +1,5 @@
 .*.swp
-PodSixNet.egg-info
+*.egg-info
 *.pyc
 *.sublime-project
 *.sublime-workspace

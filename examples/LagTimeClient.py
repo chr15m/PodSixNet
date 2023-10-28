@@ -4,7 +4,7 @@ import sys
 from time import sleep
 from sys import stdin, exit
 
-from PodSixNet.Connection import connection, ConnectionListener
+from podsixnet2.Connection import connection, ConnectionListener
 
 class LagTimeClient(ConnectionListener):
     """ This example client connects to a LagTimeServer which then sends pings back.

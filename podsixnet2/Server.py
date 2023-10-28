@@ -1,8 +1,8 @@
 from __future__ import print_function
 import socket
 
-from PodSixNet.asyncwrapper import poll, asyncore
-from PodSixNet.Channel import Channel
+from podsixnet2.asyncwrapper import poll, asyncore
+from podsixnet2.Channel import Channel
 
 class Server(asyncore.dispatcher):
     channelClass = Channel
